@@ -182,8 +182,11 @@ async function run() {
   });
   const kindList = Object.keys(obstacleInfo.kinds);
   check('2 GAMEPLAY', 'ambulance and medical obstacles all spawn',
-    ['ambulance', 'bed', 'wheelchair', 'cart', 'oxygen', 'equipbox', 'gantry'].every((k) => kindList.includes(k)),
+    ['ambulance', 'bed', 'wheelchair', 'cart', 'equipbox', 'gantry'].every((k) => kindList.includes(k)),
     kindList.join(', '));
+  // oxygen cylinders are a collectible power-up now, never an obstacle
+  check('2 GAMEPLAY', 'oxygen cylinders never spawn as obstacles',
+    !kindList.includes('oxygen'), kindList.join(', '));
 
   // --- fairness: never all three lanes blocked by non-clearable obstacles ---
   const fairness = await page.evaluate(() => {

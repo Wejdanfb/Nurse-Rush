@@ -423,6 +423,56 @@ html, body {
   100% { opacity: 0; transform: translateY(-34px) scale(.95); }
 }
 
+/* ---------- oxygen speed boost ---------- */
+.boost-banner {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%) scale(.8);
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  transition: opacity .2s ease, transform .3s cubic-bezier(.2,1.5,.4,1);
+}
+.boost-banner.is-on { opacity: 1; transform: translateX(-50%) scale(1); }
+.boost-banner__label {
+  font-size: clamp(15px, 4.2vw, 24px);
+  font-weight: 900;
+  letter-spacing: .16em;
+  color: #6bffb0;
+  text-shadow: 0 0 16px rgba(61, 220, 132, .9), 0 2px 8px rgba(0, 0, 0, .8);
+  animation: boostThrob .5s ease-in-out infinite alternate;
+  white-space: nowrap;
+}
+@keyframes boostThrob { from { transform: scale(1); } to { transform: scale(1.06); } }
+.boost-banner__track {
+  margin: 6px auto 0;
+  width: min(190px, 48vw);
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(3, 15, 22, .6);
+  border: 1px solid rgba(107, 255, 176, .35);
+  overflow: hidden;
+}
+.boost-banner__fill {
+  height: 100%;
+  width: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #3ddc84, #6bffb0);
+  box-shadow: 0 0 10px rgba(61, 220, 132, .8);
+  transition: width .12s linear;
+}
+/* green rush at the screen edges while the boost is live */
+body.is-boosting #hud::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(130% 90% at 50% 50%, transparent 52%, rgba(61, 220, 132, .26) 100%);
+  animation: boostEdge .7s ease-in-out infinite alternate;
+}
+@keyframes boostEdge { from { opacity: .55; } to { opacity: 1; } }
+
 .finish-flash {
   position: absolute;
   inset: 0;

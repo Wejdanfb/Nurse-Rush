@@ -1,4 +1,4 @@
-  PASS  [1 INTRO] nurse walks inside the hospital  — z 3.9 → 3.3, anim=walk
+  PASS  [1 INTRO] nurse walks inside the hospital  — z 3.9 → 3.4, anim=walk
   PASS  [1 INTRO] emergency alarm plays  — siren node active=true
   PASS  [1 INTRO] red emergency lights activate  — alarm=0.71 strobe=0.25 lights=0.9/5.8
   PASS  [1 INTRO] EMERGENCY ALERT message shown  — EMERGENCY ALERT!
@@ -11,11 +11,12 @@
   PASS  [2 GAMEPLAY] lane movement clamps at the edges (no sliding off the road)  — right-at-2 → 2, left-at-0 → 0
   PASS  [2 GAMEPLAY] jumping works (keyboard ↑)  — y=1.12 anim=jump
   PASS  [2 GAMEPLAY] spacebar jumps
-  PASS  [2 GAMEPLAY] sliding works (keyboard ↓)  — slide timer=0.60 anim=slide
-  PASS  [2 GAMEPLAY] ambulance and medical obstacles all spawn  — gantry, ambulance, cart, wheelchair, bed, oxygen, equipbox
+  PASS  [2 GAMEPLAY] sliding works (keyboard ↓)  — slide timer=0.64 anim=slide
+  PASS  [2 GAMEPLAY] ambulance and medical obstacles all spawn  — wheelchair, bed, equipbox, ambulance, gantry, cart
+  PASS  [2 GAMEPLAY] oxygen cylinders never spawn as obstacles  — wheelchair, bed, equipbox, ambulance, gantry, cart
   PASS  [2 GAMEPLAY] obstacle rows always leave a passable lane  — 408 rows sampled, 0 fully blocked
   PASS  [2 GAMEPLAY] collision: running into an obstacle registers a hit
-  PASS  [2 GAMEPLAY] collision: jumping clears a jumpable obstacle  — clearance height 1.12
+  PASS  [2 GAMEPLAY] collision: jumping clears a jumpable obstacle  — clearance height 0.9
   PASS  [2 GAMEPLAY] collision: a too-low jump still hits
   PASS  [2 GAMEPLAY] collision: the imaging arch hits a running player
   PASS  [2 GAMEPLAY] collision: sliding clears the imaging arch
@@ -26,10 +27,10 @@
   PASS  [3 QUESTIONS] all 20 questions imported and valid  — 20 questions, validateBank issues: none
   PASS  [3 QUESTIONS] True/False questions present and typed  — TF: Q02,Q11,Q12,Q18,Q20 | MCQ: 15
   PASS  [3 QUESTIONS] exactly two DIFFERENT questions per round  — 0 duplicate-in-round over 500 rounds
-  PASS  [3 QUESTIONS] selection randomised between rounds  — 174 distinct pairs over 500 rounds, all 20 ids used, 0 back-to-back repeats
+  PASS  [3 QUESTIONS] selection randomised between rounds  — 177 distinct pairs over 500 rounds, all 20 ids used, 0 back-to-back repeats
   PASS  [3 QUESTIONS] options shuffle without breaking the correct answer  — 4000 shuffles: exactly one correct option every time, text always matches the answer key
-  PASS  [1 INTRO] Skip Intro works  — button 44px, reached gameplay in 2.2 s wall, corridor torn down, round timer at 0.17 s
-  PASS  [3 QUESTIONS] answers are selectable buttons only — no typing  — 2 buttons, 0 text inputs
+  PASS  [1 INTRO] Skip Intro works  — button 44px, reached gameplay in 2.3 s wall, corridor torn down, round timer at 0.17 s
+  PASS  [3 QUESTIONS] answers are selectable buttons only — no typing  — 4 buttons, 0 text inputs
   PASS  [3 QUESTIONS] question overlay does not hide the whole environment
   PASS  [3 QUESTIONS] character stops while a question is shown
   PASS  [3 QUESTIONS] 30-second answer limit  — clock started at 29.8 s
@@ -45,10 +46,10 @@
   PASS  [4 TIMER] HUD speed indicator tracks the tier  — 17% → 33% → 50% → 67% → 83% → 100%
   PASS  [4 TIMER] player reaches and crosses the finish line (even after being slowed)  — gate spawned 217 m ahead, crossed at t=118.8 s
   PASS  [5 END SCREENS] victory requires 2/2 correct AND the clock reaching zero  — YOU SURVIVED THE SHIFT! at t=120.0 s with 2/2
-  PASS  [5 END SCREENS] final score arithmetic is correct  — shown 30 = pickups 30 + answers 200 − hits 200
-  PASS  [5 END SCREENS] best score persisted  — best=30
+  PASS  [5 END SCREENS] final score arithmetic is correct  — shown 275 = pickups 225 + answers 200 − hits 150
+  PASS  [5 END SCREENS] best score persisted  — best=275
   PASS  [5 END SCREENS] Play Again starts a genuinely fresh round  — score 0, questions 0/2, timer 1:59
-  PASS  [5 END SCREENS] Play Again draws new random questions  — Q17+Q08 → Q19+Q12
+  PASS  [5 END SCREENS] Play Again draws new random questions  — Q02+Q08 → Q10+Q18
   PASS  [5 END SCREENS] ending the round with fewer than 2/2 is a loss, not a win  — The shift ended with 1/2 questions answered correctly.
   PASS  [6 RESPONSIVE] iPhone 14 portrait: menu fits with no overlap  — 390×844
   PASS  [7 FOOTER] iPhone 14 portrait: renders exactly "Developed by Wejdan Boharam"  — rendered as "Developed by Wejdan Boharam" (text-transform: none)
@@ -57,10 +58,10 @@
   PASS  [2 GAMEPLAY] iPhone 14 portrait: swipe up jumps  — y=0.65
   PASS  [2 GAMEPLAY] iPhone 14 portrait: swipe down slides  — slide timer=0.64
   PASS  [6 RESPONSIVE] iPhone 14 portrait: HUD does not overlap or clip  — clear
-  PASS  [6 RESPONSIVE] iPhone 14 portrait: question card fits and keeps the game visible  — card 398→806 of 844px
+  PASS  [6 RESPONSIVE] iPhone 14 portrait: question card fits and keeps the game visible  — card 420→806 of 844px
   PASS  [6 RESPONSIVE] iPhone 14 portrait: answer buttons meet the 44px tap target  — 52px 52px 52px 52px
   PASS  [6 RESPONSIVE] iPhone 14 portrait: question card clears the footer  — card bottom 806, footer top 814
-  PASS  [6 RESPONSIVE] iPhone 14 portrait: renderer budget sane  — 420 draw calls, 52k tris, dpr 1.95, shadows false, fov 74
+  PASS  [6 RESPONSIVE] iPhone 14 portrait: renderer budget sane  — 330 draw calls, 46k tris, dpr 1.95, shadows false, fov 74
   PASS  [6 RESPONSIVE] iPhone 14 landscape: menu fits with no overlap  — 844×390
   PASS  [7 FOOTER] iPhone 14 landscape: renders exactly "Developed by Wejdan Boharam"  — rendered as "Developed by Wejdan Boharam" (text-transform: none)
   PASS  [6 RESPONSIVE] iPhone 14 landscape: menu buttons meet the 44px tap target  — btn-play:44px btn-howto:44px btn-sound:44px
@@ -69,9 +70,9 @@
   PASS  [2 GAMEPLAY] iPhone 14 landscape: swipe down slides  — slide timer=0.60
   PASS  [6 RESPONSIVE] iPhone 14 landscape: HUD does not overlap or clip  — clear
   PASS  [6 RESPONSIVE] iPhone 14 landscape: question card fits and keeps the game visible  — card 153→360 of 390px
-  PASS  [6 RESPONSIVE] iPhone 14 landscape: answer buttons meet the 44px tap target  — 53px 53px 44px 44px
+  PASS  [6 RESPONSIVE] iPhone 14 landscape: answer buttons meet the 44px tap target  — 44px 44px 53px 53px
   PASS  [6 RESPONSIVE] iPhone 14 landscape: question card clears the footer  — card bottom 360, footer top 366
-  PASS  [6 RESPONSIVE] iPhone 14 landscape: renderer budget sane  — 344 draw calls, 47k tris, dpr 1.95, shadows false, fov 62
+  PASS  [6 RESPONSIVE] iPhone 14 landscape: renderer budget sane  — 324 draw calls, 40k tris, dpr 1.95, shadows false, fov 62
   PASS  [6 RESPONSIVE] iPad portrait: menu fits with no overlap  — 820×1180
   PASS  [7 FOOTER] iPad portrait: renders exactly "Developed by Wejdan Boharam"  — rendered as "Developed by Wejdan Boharam" (text-transform: none)
   PASS  [6 RESPONSIVE] iPad portrait: menu buttons meet the 44px tap target  — btn-play:52px btn-howto:52px btn-sound:55px
@@ -79,32 +80,32 @@
   PASS  [2 GAMEPLAY] iPad portrait: swipe up jumps  — y=0.65
   PASS  [2 GAMEPLAY] iPad portrait: swipe down slides  — slide timer=0.64
   PASS  [6 RESPONSIVE] iPad portrait: HUD does not overlap or clip  — clear
-  PASS  [6 RESPONSIVE] iPad portrait: question card fits and keeps the game visible  — card 830→1138 of 1180px
+  PASS  [6 RESPONSIVE] iPad portrait: question card fits and keeps the game visible  — card 858→1138 of 1180px
   PASS  [6 RESPONSIVE] iPad portrait: answer buttons meet the 44px tap target  — 52px 52px 52px 52px
   PASS  [6 RESPONSIVE] iPad portrait: question card clears the footer  — card bottom 1138, footer top 1146
-  PASS  [6 RESPONSIVE] iPad portrait: renderer budget sane  — 316 draw calls, 43k tris, dpr 1.14, shadows false, fov 74
+  PASS  [6 RESPONSIVE] iPad portrait: renderer budget sane  — 362 draw calls, 52k tris, dpr 1.14, shadows false, fov 74
   PASS  [6 RESPONSIVE] iPad landscape: menu fits with no overlap  — 1180×820
   PASS  [7 FOOTER] iPad landscape: renders exactly "Developed by Wejdan Boharam"  — rendered as "Developed by Wejdan Boharam" (text-transform: none)
   PASS  [6 RESPONSIVE] iPad landscape: menu buttons meet the 44px tap target  — btn-play:52px btn-howto:52px btn-sound:55px
   PASS  [2 GAMEPLAY] iPad landscape: swipe left / right changes lane  — 1 →0 →1 →2
-  PASS  [2 GAMEPLAY] iPad landscape: swipe up jumps  — y=0.65
+  PASS  [2 GAMEPLAY] iPad landscape: swipe up jumps  — y=0.90
   PASS  [2 GAMEPLAY] iPad landscape: swipe down slides  — slide timer=0.60
   PASS  [6 RESPONSIVE] iPad landscape: HUD does not overlap or clip  — clear
-  PASS  [6 RESPONSIVE] iPad landscape: question card fits and keeps the game visible  — card 481→778 of 820px
-  PASS  [6 RESPONSIVE] iPad landscape: answer buttons meet the 44px tap target  — 69px 69px 52px 52px
+  PASS  [6 RESPONSIVE] iPad landscape: question card fits and keeps the game visible  — card 464→778 of 820px
+  PASS  [6 RESPONSIVE] iPad landscape: answer buttons meet the 44px tap target  — 69px 69px 69px 69px
   PASS  [6 RESPONSIVE] iPad landscape: question card clears the footer  — card bottom 778, footer top 786
-  PASS  [6 RESPONSIVE] iPad landscape: renderer budget sane  — 385 draw calls, 53k tris, dpr 1.14, shadows false, fov 62
+  PASS  [6 RESPONSIVE] iPad landscape: renderer budget sane  — 371 draw calls, 44k tris, dpr 1.14, shadows false, fov 62
   PASS  [6 RESPONSIVE] Desktop 1440: menu fits with no overlap  — 1440×900
   PASS  [7 FOOTER] Desktop 1440: renders exactly "Developed by Wejdan Boharam"  — rendered as "Developed by Wejdan Boharam" (text-transform: none)
   PASS  [6 RESPONSIVE] Desktop 1440: menu buttons meet the 44px tap target  — btn-play:52px btn-howto:52px btn-sound:55px
   PASS  [6 RESPONSIVE] Desktop 1440: HUD does not overlap or clip  — clear
-  PASS  [6 RESPONSIVE] Desktop 1440: question card fits and keeps the game visible  — card 532→858 of 900px
-  PASS  [6 RESPONSIVE] Desktop 1440: answer buttons meet the 44px tap target  — 69px 69px 52px 52px
+  PASS  [6 RESPONSIVE] Desktop 1440: question card fits and keeps the game visible  — card 543→858 of 900px
+  PASS  [6 RESPONSIVE] Desktop 1440: answer buttons meet the 44px tap target  — 69px 69px 69px 69px
   PASS  [6 RESPONSIVE] Desktop 1440: question card clears the footer  — card bottom 858, footer top 866
-  PASS  [6 RESPONSIVE] Desktop 1440: renderer budget sane  — 299 draw calls, 41k tris, dpr 1.00, shadows false, fov 62
+  PASS  [6 RESPONSIVE] Desktop 1440: renderer budget sane  — 335 draw calls, 45k tris, dpr 1.00, shadows false, fov 62
 
 ======================================================
-104/104 checks passed
+105/105 checks passed
 No console or page errors in any context.
 
 ALL ACCEPTANCE CHECKS PASSED

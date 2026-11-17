@@ -216,7 +216,7 @@ over a second, because the questions are the real challenge.
 | Obstacle | How to clear it |
 | --- | --- |
 | Ambulance | change lane (cannot be jumped) |
-| Hospital bed, wheelchair, supply cart, oxygen cylinders, equipment boxes | jump |
+| Hospital bed, wheelchair, supply cart, equipment boxes | jump |
 | Mobile imaging arch (spans all three lanes) | slide |
 
 Rows are generated so at least one lane is always passable: at most two of
@@ -230,6 +230,15 @@ by sliding.
 | Cash | 50 | 5 |
 | Stethoscope | 75 | — |
 | First aid kit | 100 | — |
+| Oxygen cylinder (rare) | 25 | — |
+
+Oxygen cylinders are a **power-up, not an obstacle**. Collecting one grants a
+5-second speed boost on top of the current speed tier, with a motion trail,
+a widened lens and a SPEED BOOST! indicator. The boost is additive and
+capped, so the progressive speed system keeps advancing underneath it and
+the maximum tier stays controllable. They spawn roughly once every 300-500 m
+— about one for every 28 coin runs — never within 16 m of an obstacle in the
+same lane, and missing one costs nothing.
 
 ---
 

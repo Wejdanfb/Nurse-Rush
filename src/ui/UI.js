@@ -26,6 +26,8 @@ export class UI {
       speedLabel: $('speed-label'),
       speedFill: $('speed-fill'),
       toasts: $('toast-stack'),
+      boostBanner: $('boost-banner'),
+      boostFill: $('boost-fill'),
       finishFlash: $('finish-flash'),
       question: $('question'),
       qBadge: $('q-badge'),
@@ -79,6 +81,7 @@ export class UI {
   setHud(on) {
     this.el.hud.classList.toggle('is-active', on);
     document.body.classList.toggle('is-playing', on);
+    if (!on) this.setBoost(0, 1);   // never leave the boost banner up
   }
 
   setIntroUI(on) {
@@ -146,6 +149,18 @@ export class UI {
   setSpeed(tier, label) {
     this.el.speedLabel.textContent = label;
     this.el.speedFill.style.width = `${Math.round(((tier + 1) / 6) * 100)}%`;
+  }
+
+  /**
+   * Oxygen power-up indicator.
+   * @param {number} remaining seconds of boost left (0 hides it)
+   * @param {number} total the full boost duration
+   */
+  setBoost(remaining, total) {
+    const on = remaining > 0;
+    this.el.boostBanner.classList.toggle('is-on', on);
+    document.body.classList.toggle('is-boosting', on);
+    if (on) this.el.boostFill.style.width = `${(remaining / total) * 100}%`;
   }
 
   toast(text, kind = 'good') {

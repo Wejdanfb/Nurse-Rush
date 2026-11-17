@@ -46,6 +46,10 @@ export class RunnerWorld {
     this.nextObstacleAt = 26;     // metres of travel
     this.nextCoinAt = 14;
     this.nextPropAt = 0;
+    // Oxygen power-ups are deliberately rare: one every ~300-500 m, against
+    // a coin run every ~10-22 m. The first cannot appear in the opening
+    // stretch, so the player meets ordinary pickups first.
+    this.nextOxygenAt = 320 + Math.random() * 160;
     this.lastPatternLanes = [];
 
     this.finishGate = null;
@@ -280,7 +284,9 @@ export class RunnerWorld {
       return;
     }
 
-    const jumpables = ['bed', 'wheelchair', 'cart', 'oxygen', 'equipbox'];
+    // Oxygen cylinders are NOT obstacles any more - they are the speed
+    // power-up, spawned as a collectible by _spawnOxygen().
+    const jumpables = ['bed', 'wheelchair', 'cart', 'equipbox'];
     const lanes = [0, 1, 2];
     // shuffle
     for (let i = 2; i > 0; i--) {
@@ -307,6 +313,53 @@ export class RunnerWorld {
       this.group.add(o);
       this.obstacles.push({ obj: o, lane, full: o.userData.clear === 'full', data: o.userData });
     }
+  }
+
+  /**
+   * Spawn a single oxygen cylinder power-up.
+   *
+   * Rare by design and never unavoidable: the lane is chosen from those
+   * with no obstacle anywhere near the same stretch of road, so reaching it
+   * is always a free choice rather than a trade against a collision. It
+   * floats higher than ordinary pickups and carries a glow decal so it
+   * reads as a power-up at distance.
+   */
+  _spawnOxygen(z) {
+    // lanes with nothing in the way for a good stretch either side
+    const free = [0, 1, 2].filter((lane) => !this.obstacles.some((o) => {
+      const sameLane = o.lane === -1 || o.lane === lane;
+      return sameLane && Math.abs(o.obj.position.z - z) < 16;
+    }));
+    if (!free.length) return false;   // try again on the next cycle
+
+    const lane = free[Math.floor(Math.random() * free.length)];
+    const c = acquireCollectible('oxygen');
+    const y = 1.05;
+    c.position.set(LANE_X[lane], y, z);
+    this.group.add(c);
+
+    // Glow halo so it is unmistakably a pickup. Added once per pooled
+    // instance - these objects are recycled, so adding it unconditionally
+    // would stack a new halo on every respawn.
+    let halo = c.userData.halo;
+    if (!halo) {
+      halo = new THREE.Mesh(
+        this.geos.plane,
+        new THREE.MeshBasicMaterial({
+          map: glowTexture('110,255,160'), transparent: true, opacity: 0.55,
+          depthWrite: false, blending: THREE.AdditiveBlending,
+        })
+      );
+      halo.scale.set(2.6, 2.6, 1);
+      c.add(halo);
+      c.userData.halo = halo;
+    }
+
+    this.collectibles.push({
+      obj: c, lane, baseY: y, data: c.userData, taken: false,
+      phase: Math.random() * 6.28, halo,
+    });
+    return true;
   }
 
   _spawnCoinRun(z) {
@@ -407,6 +460,7 @@ export class RunnerWorld {
       this.nextObstacleAt = Math.max(this.nextObstacleAt, this.distance + 12);
       this.nextCoinAt = Math.max(this.nextCoinAt, this.distance + 6);
       this.nextPropAt = Math.max(this.nextPropAt, this.distance + 4);
+      this.nextOxygenAt = Math.max(this.nextOxygenAt, this.distance + 60);
     }
   }
 
@@ -438,6 +492,12 @@ export class RunnerWorld {
       const c = this.collectibles[i];
       c.obj.position.z += dz;
       c.obj.rotation.y += c.data.spin * dt;
+      // the glow halo is a child of a spinning object: cancel the spin so it
+      // keeps facing the camera instead of turning edge-on and vanishing
+      if (c.halo) {
+        c.halo.rotation.y = -c.obj.rotation.y;
+        c.halo.material.opacity = 0.42 + Math.sin(this.time * 4 + c.phase) * 0.16;
+      }
       c.obj.position.y = c.baseY + Math.sin(this.time * 2.4 + c.phase) * 0.09;
       if (c.obj.position.z > RECYCLE_Z || c.taken) {
         releaseCollectible(c.obj);
@@ -480,6 +540,12 @@ export class RunnerWorld {
     if (this.distance >= this.nextCoinAt) {
       this._spawnCoinRun(SPAWN_Z + Math.random() * 20);
       this.nextCoinAt = this.distance + 10 + Math.random() * 12;
+    }
+    if (this.distance >= this.nextOxygenAt) {
+      // if every lane is blocked just here, wait a little and try again
+      // rather than dropping it somewhere unreachable
+      const placed = this._spawnOxygen(SPAWN_Z + Math.random() * 12);
+      this.nextOxygenAt = this.distance + (placed ? 300 + Math.random() * 200 : 25);
     }
     if (this.distance >= this.nextPropAt) {
       this._spawnSideProps(SPAWN_Z - Math.random() * 10);

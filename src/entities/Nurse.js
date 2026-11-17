@@ -14,12 +14,16 @@ import { mergeByMaterial } from '../core/MeshUtils.js';
  */
 
 const C = {
-  skin: 0xf3c69d,
-  skinShade: 0xe0a97d,
-  scrubTop: 0x1f9d8f,
-  scrubTopDark: 0x17867a,
-  scrubPant: 0x14756b,
-  trim: 0xeefbf8,
+  // Warm, light, natural skin - brightened from the original without
+  // tipping into pale or washed out.
+  skin: 0xfbd9b4,
+  skinShade: 0xeec196,
+  // Light mauve scrubs: a soft pastel purple that reads clearly against
+  // the teal corridor and the dusk-blue road.
+  scrubTop: 0xc9a9d8,
+  scrubTopDark: 0xae8cc0,
+  scrubPant: 0xb897c9,
+  trim: 0xf7f1fa,
   hair: 0x3a2318,
   hairHi: 0x4d3022,
   croc: 0xffc244,

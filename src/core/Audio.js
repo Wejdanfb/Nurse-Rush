@@ -193,6 +193,17 @@ export class AudioEngine {
     this._noise({ dur: 0.85, gain: 0.14, type: 'lowpass', freq: 700, q: 0.7 });
     this._tone({ freq: 90, type: 'sine', dur: 0.8, gain: 0.1, slideTo: 150 });
   }
+  /** Oxygen power-up: a bright rising sweep with a hiss of released gas. */
+  boost() {
+    this._tone({ freq: NOTE(0), type: 'triangle', dur: 0.45, gain: 0.22, slideTo: NOTE(24) });
+    this._tone({ freq: NOTE(7), type: 'square', dur: 0.4, gain: 0.1, at: 0.05, slideTo: NOTE(28) });
+    [12, 16, 19, 24].forEach((s, i) =>
+      this._tone({ freq: NOTE(s), type: 'triangle', dur: 0.3, gain: 0.14, at: 0.12 + i * 0.06 })
+    );
+    // escaping gas
+    this._noise({ dur: 0.45, gain: 0.12, type: 'highpass', freq: 3200 });
+  }
+
   finish() {
     this._tone({ freq: NOTE(12), type: 'square', dur: 0.1, gain: 0.16 });
     this._tone({ freq: NOTE(24), type: 'square', dur: 0.3, gain: 0.18, at: 0.1 });

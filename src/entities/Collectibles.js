@@ -20,6 +20,9 @@ const M = {
   teal:     new THREE.MeshStandardMaterial({ color: 0x1f9d8f, roughness: 0.5 }),
   glass:    new THREE.MeshStandardMaterial({ color: 0xbfeaf5, roughness: 0.1, metalness: 0.2, transparent: true, opacity: 0.8 }),
   blue:     new THREE.MeshStandardMaterial({ color: 0x4ec6ff, roughness: 0.4 }),
+  // emissive so the power-up reads as a pickup at a distance
+  boostGreen: new THREE.MeshStandardMaterial({ color: 0x3ddc84, roughness: 0.35, metalness: 0.2, emissive: 0x126b38, emissiveIntensity: 0.7 }),
+  boostDark:  new THREE.MeshStandardMaterial({ color: 0x1f9256, roughness: 0.45 }),
 };
 
 const G = {
@@ -137,12 +140,54 @@ function buildSupplies() {
   return g;
 }
 
+/**
+ * Oxygen cylinder - the speed power-up.
+ *
+ * Deliberately styled so it cannot be mistaken for the obstacle it used to
+ * be: it floats, it carries a bright glow halo and chevrons, and it is the
+ * only pickup with a white pressure collar.
+ */
+function buildOxygen() {
+  const g = new THREE.Group();
+
+  // body
+  cyl(g, 0.115, 0.44, M.boostGreen, 0, 0, 0);
+  // domed shoulder + base
+  const top = new THREE.Mesh(G.sph, M.boostGreen);
+  top.scale.set(0.23, 0.14, 0.23); top.position.y = 0.22; top.castShadow = true; g.add(top);
+  const base = new THREE.Mesh(G.sph, M.boostDark);
+  base.scale.set(0.23, 0.1, 0.23); base.position.y = -0.22; base.castShadow = true; g.add(base);
+
+  // valve + regulator
+  cyl(g, 0.055, 0.1, M.chrome, 0, 0.3, 0, true);
+  cyl(g, 0.032, 0.07, M.chrome, 0, 0.37, 0, true);
+  const gauge = cyl(g, 0.05, 0.03, M.white, 0, 0.3, 0.07, true);
+  gauge.rotation.x = Math.PI / 2;
+
+  // white pressure collar + speed chevrons
+  cyl(g, 0.125, 0.05, M.white, 0, 0.08, 0);
+  for (let i = 0; i < 3; i++) {
+    const ch = box(g, 0.16, 0.028, 0.02, M.white, 0, -0.04 - i * 0.055, 0.112);
+    ch.rotation.z = 0.55;
+    const ch2 = box(g, 0.16, 0.028, 0.02, M.white, 0, -0.04 - i * 0.055, -0.112);
+    ch2.rotation.z = -0.55;
+  }
+
+  g.userData = {
+    kind: 'oxygen', score: 25, coins: 0, spin: 1.9,
+    label: 'Oxygen — speed boost', fx: 'green', radius: 0.55,
+    boost: true,
+  };
+  return g;
+}
+
 const BUILDERS = {
   coin: buildCoin,
   cash: buildCash,
   stethoscope: buildStethoscope,
   firstaid: buildFirstAid,
   supplies: buildSupplies,
+  oxygen: buildOxygen,
 };
 
 export const COLLECTIBLE_KINDS = Object.keys(BUILDERS);

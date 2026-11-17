@@ -1,0 +1,36 @@
+  PASS  NURSE: scrubs are light mauve  — #c9a9d8 #ae8cc0 #b897c9
+  PASS  NURSE: old teal scrub colours are gone
+  PASS  NURSE: skin is lighter and warm  — #fbd9b4 #eec196
+  PASS  NURSE: previous darker skin tones replaced
+  PASS  NURSE: curly hair preserved  — hair meshes: 2, original hair colours retained
+  PASS  NURSE: Crocs preserved
+  PASS  NURSE: rig and proportions untouched  — 16 joints
+  PASS  NURSE: all seven animations still drive the rig  — idle, walk, run, jump, slide, lose, victory
+  PASS  NURSE: intro uses the same recoloured character  — walking in the corridor as "walk"
+  PASS  OXYGEN: never spawns as an obstacle  — 930 obstacles over 600 rows: equipbox, bed, cart, wheelchair, ambulance, gantry
+  PASS  OXYGEN: the other obstacles are unchanged  — equipbox:149 bed:171 cart:171 wheelchair:164 ambulance:180 gantry:95
+  PASS  OXYGEN: running into one collects it instead of colliding  — collected for +25, no slow-down, state still running
+  PASS  OXYGEN: collecting activates the speed boost  — 5 s of boost
+  PASS  BOOST: configured for ~5 seconds  — 5 s
+  PASS  BOOST: SPEED BOOST! indicator is shown  — "⚡ SPEED BOOST!", bar at 75.8333%
+  PASS  BOOST: speed rises to the tier speed plus the boost  — tier 0 cruise 13.0 → boosted 19.6 (expected 20)
+  PASS  BOOST: visual speed effect (field of view widens)  — fov 62.0 → 68.9
+  PASS  BOOST: progressive speed tier is not reset  — tier 0 → 0
+  PASS  BOOST: question schedule untouched  — nextQuestionAt 25 → 25
+  PASS  BOOST: counts down monotonically and expires  — 90 frames sampled
+  PASS  BOOST: indicator clears when it expires
+  PASS  BOOST: speed returns to the normal progressive speed  — 19.6 → 13.4, back at the tier-0 cruise of 13.0
+  PASS  BOOST: field of view returns to normal  — fov back to 62.1
+  PASS  BOOST: capped so the maximum tier stays controllable  — would be 35 uncapped, capped at 33
+  PASS  BOOST: a second pickup refreshes rather than stacks  — 5 s then 5 s
+  PASS  SPAWN: oxygen is rare compared with coins  — 3601 m simulated: 9 oxygen vs 225 coin runs (1 per 25)
+  PASS  SPAWN: never placed close together  — closest pair 310 m, average 389 m
+  PASS  SPAWN: never placed in an unavoidable position  — 10 placements checked, 0 with an obstacle in the same lane nearby
+  PASS  SPAWN: reads as a collectible (floats, glowing halo)  — floats at y=1.05, one glow halo, labelled "Oxygen — speed boost"
+  PASS  MISSING one has no penalty  — no score change, no slow-down, round continues
+
+======================================================
+30/30 checks passed
+No console or page errors.
+
+ALL NURSE APPEARANCE + OXYGEN BOOST TESTS PASSED

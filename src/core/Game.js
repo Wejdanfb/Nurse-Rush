@@ -24,6 +24,14 @@ export const ROUND = {
   ANSWER_LIMIT: 30,         // seconds per question, spent out of the 120
   CORRECT_POINTS: 100,
   HIT_PENALTY: 50,
+
+  // Oxygen power-up. The boost is ADDITIVE on top of whatever the speed
+  // tier currently is, so it never resets or interferes with the
+  // progressive speed system - and it is capped, so even at the maximum
+  // tier the game stays controllable.
+  BOOST_SECONDS: 5,
+  BOOST_ADD: 7,
+  BOOST_MAX_SPEED: 33,
   FINISH_GATE_AT: 112,      // gate appears in the last stretch
 };
 
@@ -213,7 +221,7 @@ export class Game {
 
     // a dedicated key light so the character is the brightest thing on the
     // menu rather than a silhouette against the ambulances
-    this.menuKey = new THREE.PointLight(0xbdf6ec, 22, 14, 2);
+    this.menuKey = new THREE.PointLight(0xfdf6ff, 22, 14, 2);  // near-neutral so the mauve scrubs read true
     this.menuKey.position.set(1.6, 3.0, 2.6);
     rig.add(this.menuKey);
 
@@ -281,6 +289,9 @@ export class Game {
     this.pendingSlide = false;
     this.stumble = 0;
     this.slowUntil = 0;
+    // counts down only while actually running, so a question never eats it
+    this.boostRemaining = 0;
+    this.boostTrailAccum = 0;
     this.shake = 0;
     this.questions = [];
     this.questionIndex = 0;
@@ -358,6 +369,7 @@ export class Game {
 
     this.camera.position.set(0, 3.2, 7.0);
     this.camLook.set(0, 1.3, -8);
+    this._resize();   // reset the field of view in case a boost widened it
 
     this.audio.setIntensity(0);
     this.audio.startMusic(0);
@@ -437,8 +449,22 @@ export class Game {
       this.audio.tick(true);
     }
 
+    // ---- oxygen speed boost ----
+    // Counts down against gameplay time only. It is read-only with respect
+    // to the round clock and the question schedule - neither is touched.
+    if (this.boostRemaining > 0) {
+      this.boostRemaining = Math.max(0, this.boostRemaining - dt);
+      this.ui.setBoost(this.boostRemaining, ROUND.BOOST_SECONDS);
+      if (this.boostRemaining === 0) this.ui.setBoost(0, ROUND.BOOST_SECONDS);
+    }
+    const boosting = this.boostRemaining > 0;
+
     // ---- target speed ----
+    // The tier is still driven purely by roundTime, so the progressive
+    // speed system keeps advancing underneath the boost and resumes exactly
+    // where it would have been when the boost ends.
     let target = TIERS[tier].speed;
+    if (boosting) target = Math.min(target + ROUND.BOOST_ADD, ROUND.BOOST_MAX_SPEED);
     if (this.slowUntil > 0) {
       this.slowUntil -= dt;
       target *= 0.55;
@@ -492,6 +518,22 @@ export class Game {
     // ---- world ----
     this.world.update(dt, tier);
     this.particles.update(dt, this.speed * dt);
+
+    // motion trail streaming off the nurse while boosting
+    if (boosting) {
+      this.boostTrailAccum += dt;
+      while (this.boostTrailAccum > 0.045) {
+        this.boostTrailAccum -= 0.045;
+        this.particles.burst(
+          new THREE.Vector3(this.laneX + (Math.random() - 0.5) * 0.7,
+            0.35 + Math.random() * 1.2, 0.45),
+          { count: 2, color: Math.random() > 0.45 ? 'green' : 'teal',
+            speed: 1.1, spread: 0.5, life: 0.42, size: 0.75, gravity: -1.5, upward: 0.2 }
+        );
+      }
+    } else {
+      this.boostTrailAccum = 0;
+    }
 
     this._collisions();
     this._camera(dt);
@@ -588,11 +630,20 @@ export class Game {
     this.ui.setScore(this.score);
     if (d.coins) this.ui.setCoins(this.coins);
 
-    if (d.kind === 'coin') this.audio.coin();
+    if (d.boost) {
+      // refresh rather than stack, so two in quick succession can never
+      // compound into an uncontrollable speed
+      this.boostRemaining = ROUND.BOOST_SECONDS;
+      this.ui.setBoost(this.boostRemaining, ROUND.BOOST_SECONDS);
+      this.ui.toast('SPEED BOOST!', 'good');
+      this.audio.boost();
+      this.particles.ring(new THREE.Vector3(this.laneX, 1.0, 0),
+        { count: 26, color: 'green', radius: 2.4, life: 0.8, size: 1 });
+    } else if (d.kind === 'coin') this.audio.coin();
     else if (d.kind === 'cash') this.audio.cash();
     else this.audio.pickup();
 
-    if (d.kind !== 'coin') this.ui.toast(`+${d.score}  ${d.label}`, 'gold');
+    if (d.kind !== 'coin' && !d.boost) this.ui.toast(`+${d.score}  ${d.label}`, 'gold');
 
     this.particles.ring(c.obj.position, {
       count: d.kind === 'coin' ? 7 : 14,
@@ -615,6 +666,15 @@ export class Game {
     const look = new THREE.Vector3(this.laneX * 0.55, 1.3 + this.playerY * 0.45, -8 - speedK * 3);
     this.camLook.lerp(look, k);
     this.camera.lookAt(this.camLook);
+
+    // widen the lens a touch while boosting - the classic speed cue
+    const boostFov = (this.boostRemaining > 0 ? 7 : 0);
+    const baseFov = window.innerHeight > window.innerWidth ? 74 : 62;
+    const wantFov = baseFov + boostFov;
+    if (Math.abs(this.camera.fov - wantFov) > 0.05) {
+      this.camera.fov += (wantFov - this.camera.fov) * (1 - Math.exp(-4 * dt));
+      this.camera.updateProjectionMatrix();
+    }
 
     if (this.shake > 0) {
       this.shake = Math.max(0, this.shake - dt * 2.2);
@@ -866,6 +926,7 @@ export class Game {
     this.ui.setFade(0);
     this.scene.remove(this.nurse.group);
     this._resetRoundState();
+    this._resize();   // clear any boost field-of-view
     this.buildMenu();
     const s = Storage.all();
     this.ui.setMenuBest(s.best, s.wins, s.rounds);
