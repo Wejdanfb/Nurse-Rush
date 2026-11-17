@@ -1,0 +1,21 @@
+{
+  "name": "nurse-rush",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "NURSE RUSH - 3D endless runner demo for a nursing event. Developed by Wejdan Boharam.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}
