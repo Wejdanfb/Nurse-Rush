@@ -45,8 +45,9 @@ export class Cinematic {
     this.captionIndex = -1;
 
     // lighting for the interior
-    this.hemi = new THREE.HemisphereLight(0xdff4fb, 0x2a3f49, 0.95);
-    this.dir = new THREE.DirectionalLight(0xffffff, 0.55);
+    // near-neutral sky/ground so the corridor does not tint the character
+    this.hemi = new THREE.HemisphereLight(0xfffaf4, 0x3f4347, 1.75);
+    this.dir = new THREE.DirectionalLight(0xffffff, 1.05);
     this.dir.position.set(3, 7, 4);
     scene.add(this.hemi, this.dir);
 
@@ -146,14 +147,18 @@ export class Cinematic {
     this.corridor.setAlarm(this.alarm);
     this.corridor.update(dt, this.z);
 
-    // interior lighting dims and reddens as the alarm takes hold
-    this.hemi.intensity = 0.95 - this.alarm * 0.45;
+    // Interior lighting dims and reddens as the alarm takes hold.
+    // The base tint is near-neutral on purpose: a cool clinical white here
+    // shifted the mauve scrubs towards blue-violet and left the skin
+    // looking sallow, so the character read differently in the corridor
+    // than on the menu and the road.
+    this.hemi.intensity = 1.75 - this.alarm * 0.8;
     this.hemi.color.setRGB(
-      0.87 + this.alarm * 0.13,
-      0.96 - this.alarm * 0.42,
-      1.0 - this.alarm * 0.55
+      1.0,
+      0.97 - this.alarm * 0.42,
+      0.94 - this.alarm * 0.50
     );
-    this.dir.intensity = 0.55 - this.alarm * 0.2;
+    this.dir.intensity = 1.05 - this.alarm * 0.4;
 
     // ---------------- camera ----------------
     this._camera(dt);
@@ -162,8 +167,8 @@ export class Cinematic {
     if (this.z < DOOR_Z - 6) {
       this.outsideT += dt;
       // brighten up outside
-      this.hemi.intensity += (1.05 - this.hemi.intensity) * (1 - Math.exp(-1.6 * dt));
-      this.dir.intensity += (0.8 - this.dir.intensity) * (1 - Math.exp(-1.6 * dt));
+      this.hemi.intensity += (1.9 - this.hemi.intensity) * (1 - Math.exp(-1.6 * dt));
+      this.dir.intensity += (1.4 - this.dir.intensity) * (1 - Math.exp(-1.6 * dt));
       if (this.outsideT > T_OUTSIDE_HOLD && !this.fading) {
         this.fading = true;
         this.ui.setIntroCaption('');

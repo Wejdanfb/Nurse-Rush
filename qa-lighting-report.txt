@@ -1,0 +1,26 @@
+  PASS  MENU: scrubs render as light mauve  — rgb(144,118,162) hue 275° sat 0.19 light 0.55
+  PASS  MENU: skin renders warm and light  — rgb(215,200,182) hue 33° light 0.78
+  PASS  INTRO (clinical lighting): scrubs still read as mauve  — rgb(106,82,119) hue 279° sat 0.18 light 0.39
+  PASS  INTRO (clinical lighting): skin warm and light  — hue 36° light 0.58
+  PASS  INTRO (emergency red lighting): scrubs stay in the mauve family, warmed by the red  — rgb(112,43,67) hue 339° sat 0.45 light 0.3
+  PASS  GAMEPLAY (dusk lighting): scrubs read as mauve  — rgb(155,128,164) hue 285° sat 0.17 light 0.57
+  PASS  TOP vs TROUSERS: the two scrub materials match  — menu top 279° vs trousers 275°, intro top 275° vs trousers 279°
+  PASS  CONSISTENCY: scrub hue holds across menu, corridor and gameplay  — Main menu: 275°  |  Intro corridor: 279°  |  Gameplay (dusk): 285°  (spread 10°)
+  PASS  CONSISTENCY: scrubs never go washed out or black  — lightness 0.55, 0.39, 0.3, 0.57
+  PASS  CONSISTENCY: skin is light but not excessively pale  — Main menu: light 0.78 sat 0.29  |  Intro corridor: light 0.58 sat 0.2
+  PASS  No console or page errors during the sweep
+
+--- raw samples ---
+  Main menu                  kneeL  rgb(144,118,162)  hue 275°  sat 0.19  light 0.55
+  Main menu                  chest  rgb(178,155,190)  hue 279°  sat 0.21  light 0.68
+  Main menu                  head   rgb(215,200,182)  hue  33°  sat 0.29  light 0.78
+  Intro corridor             kneeL  rgb(106,82,119)  hue 279°  sat 0.18  light 0.39
+  Intro corridor             chest  rgb(132,121,140)  hue 275°  sat 0.08  light 0.51
+  Intro corridor             head   rgb(169,152,126)  hue  36°  sat 0.2  light 0.58
+  Intro alarm (red strobes)  kneeL  rgb(112,43,67)  hue 339°  sat 0.45  light 0.3
+  Gameplay (dusk)            kneeL  rgb(155,128,164)  hue 285°  sat 0.17  light 0.57
+
+======================================================
+11/11 checks passed
+
+LIGHTING CONSISTENCY VERIFIED

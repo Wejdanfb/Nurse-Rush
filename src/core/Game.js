@@ -150,6 +150,7 @@ export class Game {
     this.rim = new THREE.DirectionalLight(0x6fe4d2, 0.5);
     this.rim.position.set(4, 4, -8);
     this.scene.add(this.rim);
+    this.rimBaseIntensity = 0.5;
   }
 
   _setupSky() {
@@ -228,6 +229,7 @@ export class Game {
     this.menuRig = { rig, ambulances, t: 0 };
     this.hemi.intensity = 1.15;
     this.sun.intensity = 1.3;
+    this.rim.intensity = this.rimBaseIntensity;
     this.scene.fog.near = 24;
     this.scene.fog.far = 78;
     this.state = 'menu';
@@ -330,6 +332,15 @@ export class Game {
       return;
     }
 
+    // The cinematic brings its own corridor lighting. Dim the menu/gameplay
+    // lights for its duration: left up they dominated the corridor (a cool
+    // hemisphere at 1.15 against the corridor's own 0.95, plus a teal rim),
+    // which both double-lit the scene and tinted the nurse blue so she read
+    // differently in the intro than on the menu and the road.
+    this.hemi.intensity = 0.1;
+    this.sun.intensity = 0.1;
+    this.rim.intensity = 0.06;
+
     this.ui.setIntroUI(true);
     this.cinematic = new Cinematic({
       scene: this.scene,
@@ -364,6 +375,7 @@ export class Game {
 
     this.hemi.intensity = 1.1;
     this.sun.intensity = 1.2;
+    this.rim.intensity = this.rimBaseIntensity;   // restored after the intro
     this.scene.fog.near = this.quality.fogNear;
     this.scene.fog.far = this.quality.fogFar;
 
