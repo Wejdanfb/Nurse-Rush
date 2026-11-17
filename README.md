@@ -171,7 +171,7 @@ nurse-rush/
 | Intro | excluded from the timer, and skippable |
 | Questions per round | 2, drawn at random from the 20-question bank |
 | Question times | about 35 s and about 80 s into the round |
-| Time to answer | 10 seconds each |
+| Time to answer | 30 seconds each, taken out of the 120 |
 | Correct answer | +100 points, gameplay resumes |
 | Wrong answer or no answer | immediate GAME OVER |
 | Win | both answers correct **and** the clock reaches zero at the finish line |

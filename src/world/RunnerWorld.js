@@ -52,6 +52,9 @@ export class RunnerWorld {
     this.finishSpawned = false;
     this.finishCrossed = false;
 
+    // while a question is on screen nothing new is generated
+    this.frozen = false;
+
     this.mats = {};
     this.geos = {};
     this._buildStatic();
@@ -390,6 +393,23 @@ export class RunnerWorld {
   // -----------------------------------------------------------------
   setSpeed(v) { this.speed = v; }
 
+  /**
+   * Freeze generation. Called while a question is displayed so no obstacle
+   * row, pickup or scenery appears behind the card; existing objects stop
+   * moving as the nurse decelerates to a standstill, because everything
+   * scrolls at her speed.
+   */
+  setFrozen(v) {
+    this.frozen = !!v;
+    if (!this.frozen) {
+      // don't let the distance accrued while stopped dump a burst of rows
+      // the moment play resumes
+      this.nextObstacleAt = Math.max(this.nextObstacleAt, this.distance + 12);
+      this.nextCoinAt = Math.max(this.nextCoinAt, this.distance + 6);
+      this.nextPropAt = Math.max(this.nextPropAt, this.distance + 4);
+    }
+  }
+
   update(dt, tier = 0) {
     this.time += dt;
     const dz = this.speed * dt;
@@ -447,6 +467,9 @@ export class RunnerWorld {
     // position so the two never fight over it.
 
     // ---- spawning, paced by distance travelled ----
+    // Nothing is generated while a question is on screen.
+    if (this.frozen) return;
+
     // Spacing scales with the current speed, so faster tiers never reduce
     // the reaction time the player gets between rows.
     const gap = Math.max(13, this.speed * 0.92);

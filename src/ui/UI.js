@@ -191,11 +191,17 @@ export class UI {
     el.question.classList.add('is-active');
   }
 
+  /**
+   * @param {number} remaining seconds left to answer
+   * @param {number} total the answer limit (30)
+   * Warning styling at 10 s, critical pulse at 5 s.
+   */
   setQuestionClock(remaining, total) {
     const r = Math.max(0, remaining);
     this.el.qClock.textContent = String(Math.ceil(r));
     this.el.qClockFill.style.width = `${(r / total) * 100}%`;
-    this.el.qClockWrap.classList.toggle('is-low', r <= 3.5);
+    this.el.qClockWrap.classList.toggle('is-warn', r <= 10 && r > 5);
+    this.el.qClockWrap.classList.toggle('is-low', r <= 5);
   }
 
   /** Reveal the result on the card. */
@@ -214,7 +220,8 @@ export class UI {
     const b = document.createElement('b');
     b.textContent = right
       ? 'Correct  ·  +100 points'
-      : chosenIndex < 0 ? 'Time up  ·  shift failed' : 'Incorrect  ·  shift failed';
+      : chosenIndex < 0 ? "TIME'S UP!  ·  shift failed" : 'Incorrect  ·  shift failed';
+    if (chosenIndex < 0) b.classList.add('is-timeup');
     const p = document.createElement('span');
     p.textContent = q.explanation;
     fb.append(b, p);
@@ -233,12 +240,18 @@ export class UI {
     this.show('victory');
   }
 
-  showGameOver({ score, coins, best, correct, reason, review }) {
+  showGameOver({ score, coins, best, correct, reason, review, timedOut = false }) {
     this.el.loseScore.textContent = String(score);
     this.el.loseCoins.textContent = String(coins);
     this.el.loseCorrect.textContent = `${correct}/2`;
     this.el.loseBest.textContent = String(best);
     this.el.loseReason.textContent = reason || '';
+
+    // A timeout gets its own headline above the usual one, so the player
+    // immediately sees WHY the shift ended.
+    const kicker = document.querySelector('#gameover .result-kicker');
+    kicker.textContent = timedOut ? "TIME'S UP!" : 'ROUND ENDED';
+    kicker.classList.toggle('result-kicker--timeup', timedOut);
 
     if (review) {
       this.el.loseReview.classList.add('is-on');
@@ -252,7 +265,7 @@ export class UI {
       if (review.chosen) {
         this.el.reviewChosen.append(document.createTextNode(review.chosen));
       } else {
-        this.el.reviewChosen.append(document.createTextNode('The 10-second limit ran out.'));
+        this.el.reviewChosen.append(document.createTextNode("Time's up — the 30-second limit ran out."));
       }
       this.el.reviewCorrect.innerHTML = '';
       const gb = document.createElement('b');

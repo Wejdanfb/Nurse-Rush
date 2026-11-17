@@ -450,7 +450,7 @@ async function run() {
   check('3 QUESTIONS', 'question overlay does not hide the whole environment',
     !qLive.overlayCoversAll);
   check('3 QUESTIONS', 'character stops while a question is shown', qLive.movementStopped);
-  check('3 QUESTIONS', '10-second answer limit', Math.abs(qLive.answerLimit - 10) < 1.5,
+  check('3 QUESTIONS', '30-second answer limit', Math.abs(qLive.answerLimit - 30) < 1.5,
     `clock started at ${qLive.answerLimit.toFixed(1)} s`);
 
   // correct answer continues
@@ -495,15 +495,21 @@ async function run() {
   await state(modPage, 'running', 300000);
   await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 34.5; });
   await state(modPage, 'question', 90000);
-  await modPage.evaluate(() => { window.NURSE_RUSH.game.questionClock = 0.05; });
+  await modPage.evaluate(() => {
+    const g = window.NURSE_RUSH.game;
+    // countdown is derived from the round clock, so advance that
+    g.roundTime = g.questionOpenedAt + window.NURSE_RUSH.ROUND.ANSWER_LIMIT + 0.05;
+  });
   const timedOut = await modPage.waitForSelector('#gameover.is-active', { timeout: 90000 })
     .then(() => true).catch(() => false);
   const toInfo = await modPage.evaluate(() => ({
     reason: document.getElementById('lose-reason').textContent,
     noAnswer: document.getElementById('review-chosen').innerText,
+    kicker: document.querySelector('#gameover .result-kicker').textContent.trim(),
   }));
-  check('3 QUESTIONS', 'running out of the 10-second limit ends the shift',
-    timedOut && /time/i.test(toInfo.reason), toInfo.reason);
+  check('3 QUESTIONS', 'running out of the 30-second limit ends the shift',
+    timedOut && /30-second limit/i.test(toInfo.reason) && /TIME'S UP/i.test(toInfo.kicker),
+    `${toInfo.kicker} — ${toInfo.reason}`);
   check('5 END SCREENS', 'timeout game over states that no answer was given',
     /no answer/i.test(toInfo.noAnswer), toInfo.noAnswer.replace(/\n/g, ' '));
 

@@ -14,7 +14,7 @@ import { Storage } from './Storage.js';
 export const ROUND = {
   DURATION: 120,            // seconds, questions included; intro excluded
   QUESTION_TIMES: [35, 80], // seconds into the round
-  ANSWER_LIMIT: 10,         // seconds per question
+  ANSWER_LIMIT: 30,         // seconds per question, spent out of the 120
   CORRECT_POINTS: 100,
   HIT_PENALTY: 50,
   FINISH_GATE_AT: 112,      // gate appears in the last stretch
@@ -279,6 +279,7 @@ export class Game {
     this.questionIndex = 0;
     this.activeQuestion = null;
     this.questionClock = 0;
+    this.questionOpenedAt = 0;
     this.answerLocked = false;
     this.finishing = false;
     this.lastTickSecond = -1;
@@ -621,6 +622,13 @@ export class Game {
     if (!q) return;
 
     this.activeQuestion = q;
+
+    // The question countdown is ANCHORED to the round clock rather than
+    // being a second timer ticking alongside it. Everything on screen is
+    // then derived from one number (this.roundTime), so the question
+    // countdown and the 120-second timer can never drift apart or
+    // disagree, however uneven the frame rate is.
+    this.questionOpenedAt = this.roundTime;
     this.questionClock = ROUND.ANSWER_LIMIT;
     this.answerLocked = false;
     this.pendingSlide = false;
@@ -629,6 +637,11 @@ export class Game {
     this.nurse.play('idle');
     this.audio.duck(true);
     this.audio.questionIn();
+
+    // Freeze the road: no new obstacle rows or pickups appear while the
+    // player is reading. The nurse decelerates to a standstill over about a
+    // second, which stops obstacle movement with her.
+    this.world.setFrozen(true);
 
     this.correctIndex = q.options.findIndex((o) => o.isCorrect);
     this.ui.showQuestion(q, this.questionIndex, (i) => this._answer(i));
@@ -666,13 +679,17 @@ export class Game {
     this.camera.lookAt(this.camLook);
 
     if (!this.answerLocked) {
+      // Derived from the round clock, not accumulated separately.
+      const elapsed = this.roundTime - this.questionOpenedAt;
       const before = Math.ceil(this.questionClock);
-      this.questionClock -= dt;
+      this.questionClock = Math.max(0, ROUND.ANSWER_LIMIT - elapsed);
       const after = Math.ceil(this.questionClock);
-      if (after !== before && after >= 0) this.audio.tick(after <= 3);
+
+      // tick only over the closing stretch, urgently over the last five
+      if (after !== before && after >= 0 && after <= 10) this.audio.tick(after <= 5);
       this.ui.setQuestionClock(this.questionClock, ROUND.ANSWER_LIMIT);
 
-      if (this.questionClock <= 0) {
+      if (elapsed >= ROUND.ANSWER_LIMIT) {
         this.answerLocked = true;
         this._answer(-1); // ran out of time
       }
@@ -701,15 +718,19 @@ export class Game {
         { count: 22, color: 'green', speed: 4.2, life: 0.8, size: 1 }
       );
 
+      // resumes as soon as the feedback has been read - never waits out the
+      // rest of the 30 seconds
       setTimeout(() => this._resumeFromQuestion(), 1500);
     } else {
+      const timedOut = index < 0;
       this.audio.wrong();
       this.nurse.play('lose', { force: true });
       setTimeout(() => {
         this.ui.hideQuestion();
         this._gameOver({
-          reason: index < 0
-            ? 'You ran out of time on the question.'
+          timedOut,
+          reason: timedOut
+            ? `No answer was selected within the ${ROUND.ANSWER_LIMIT}-second limit.`
             : 'An incorrect answer ends the shift.',
           review: {
             id: q.id,
@@ -731,6 +752,7 @@ export class Game {
     this.activeQuestion = null;
     this.questionIndex += 1;
     this.nurse.play('run', { force: true });
+    this.world.setFrozen(false);   // obstacles start arriving again
     this.state = 'running';
 
     if (ROUND.DURATION - this.roundTime <= 0) this._endRound();
@@ -779,7 +801,7 @@ export class Game {
     }, 1700);
   }
 
-  _gameOver({ reason, review }) {
+  _gameOver({ reason, review, timedOut = false }) {
     if (this.state === 'over') return;
     this.state = 'over';
     this.audio.stopMusic();
@@ -798,6 +820,7 @@ export class Game {
         correct: this.correctAnswers,
         reason,
         review,
+        timedOut,
       });
     }, 900);
   }

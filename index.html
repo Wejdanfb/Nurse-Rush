@@ -67,7 +67,7 @@
       </div>
       <div class="howto-card howto-card--warn">
         <h3>Questions</h3>
-        <p>Two questions appear mid-run. You get <b>10 seconds</b> each. A wrong or missed answer ends the shift immediately. A correct answer is <b>+100</b>.</p>
+        <p>Two questions appear mid-run. You get <b>30 seconds</b> each, and that time comes out of your 120. A wrong or missed answer ends the shift immediately. A correct answer is <b>+100</b>.</p>
       </div>
       <div class="howto-card">
         <h3>Collect</h3>
@@ -125,8 +125,11 @@
   <div class="qcard">
     <div class="qcard__head">
       <div class="qcard__badge" id="q-badge">QUESTION 1 OF 2</div>
-      <div class="qcard__clock">
-        <span id="q-clock">10</span>
+      <div class="qcard__clock" id="q-clockwrap">
+        <div class="qcard__clockrow">
+          <span id="q-clock">30</span>
+          <span class="qcard__clockunit">sec</span>
+        </div>
         <div class="qcard__clockbar"><div id="q-clockfill"></div></div>
       </div>
     </div>
