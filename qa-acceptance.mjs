@@ -422,7 +422,7 @@ async function run() {
     skipVisible.visible && skipped && !afterSkip.cinematic && afterSkip.hud && afterSkip.roundTime < 3,
     `button ${skipVisible.h}px, reached gameplay in ${((Date.now() - tSkip) / 1000).toFixed(1)} s wall, corridor torn down, round timer at ${afterSkip.roundTime.toFixed(2)} s`);
 
-  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 34.5; });
+  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 24.9; });
   await state(modPage, 'question', 90000);
   await modPage.waitForTimeout(700);
 
@@ -473,7 +473,7 @@ async function run() {
     `+${afterCorrect.score - beforeCorrect}, HUD ${afterCorrect.hud}, state resumed to running`);
 
   // wrong answer -> immediate game over
-  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 79.5; });
+  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = window.NURSE_RUSH.game.nextQuestionAt + 0.05; });
   await state(modPage, 'question', 90000);
   await modPage.evaluate(() => {
     const g = window.NURSE_RUSH.game;
@@ -493,7 +493,7 @@ async function run() {
   // no answer within the 10-second limit -> game over
   await modPage.click('#btn-lose-again');
   await state(modPage, 'running', 300000);
-  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 34.5; });
+  await modPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 24.9; });
   await state(modPage, 'question', 90000);
   await modPage.evaluate(() => {
     const g = window.NURSE_RUSH.game;
@@ -521,7 +521,8 @@ async function run() {
     const g = window.NURSE_RUSH.game;
     return {
       duration: window.NURSE_RUSH.ROUND ? window.NURSE_RUSH.ROUND.DURATION : null,
-      qTimes: window.NURSE_RUSH.ROUND ? window.NURSE_RUSH.ROUND.QUESTION_TIMES : null,
+      firstAt: window.NURSE_RUSH.ROUND ? window.NURSE_RUSH.ROUND.FIRST_QUESTION_AT : null,
+      secondAfter: window.NURSE_RUSH.ROUND ? window.NURSE_RUSH.ROUND.SECOND_QUESTION_AFTER_RESUME : null,
       limit: window.NURSE_RUSH.ROUND ? window.NURSE_RUSH.ROUND.ANSWER_LIMIT : null,
       startLabel: document.getElementById('timer-value').textContent,
       roundTime: g.roundTime,
@@ -529,8 +530,9 @@ async function run() {
   });
   check('4 TIMER', 'round is exactly 120 seconds',
     timerCfg.duration === 120, `ROUND.DURATION=${timerCfg.duration}, HUD starts at ${timerCfg.startLabel}`);
-  check('4 TIMER', 'questions scheduled at ~35 s and ~80 s',
-    JSON.stringify(timerCfg.qTimes) === '[35,80]', `${JSON.stringify(timerCfg.qTimes)}`);
+  check('4 TIMER', 'Q1 at 25 s, Q2 20 s after resuming from Q1',
+    timerCfg.firstAt === 25 && timerCfg.secondAfter === 20,
+    `FIRST_QUESTION_AT=${timerCfg.firstAt}, SECOND_QUESTION_AFTER_RESUME=${timerCfg.secondAfter}`);
 
   // Speed tiers. Any question that opens is answered immediately so the
   // sample is never taken while the nurse is stopped at a question.
@@ -625,10 +627,10 @@ async function run() {
     }, 150);
   });
 
-  await vPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 34.4; });
+  await vPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 24.9; });
   await W(vPage, () => window.NURSE_RUSH.game.correctAnswers === 1, 90000);
   await state(vPage, 'running', 90000);
-  await vPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = 79.4; });
+  await vPage.evaluate(() => { window.NURSE_RUSH.game.roundTime = window.NURSE_RUSH.game.nextQuestionAt + 0.05; });
   await W(vPage, () => window.NURSE_RUSH.game.correctAnswers === 2, 90000);
   await state(vPage, 'running', 90000);
 
@@ -702,6 +704,7 @@ async function run() {
     const g = window.NURSE_RUSH.game;
     g.correctAnswers = 1;
     g.questionIndex = 2;        // no more questions due
+    g.nextQuestionAt = null;
     g.roundTime = 119.5;
   });
   const loseOnTime = await vPage.waitForSelector('#gameover.is-active', { timeout: 120000 })
@@ -859,7 +862,7 @@ async function run() {
         : hud.offscreen.length ? `clipped: ${hud.offscreen.join(',')}` : 'clear');
 
     // question card layout + tap targets
-    await d.evaluate(() => { window.NURSE_RUSH.game.roundTime = 34.5; });
+    await d.evaluate(() => { window.NURSE_RUSH.game.roundTime = 24.9; });
     await state(d, 'question', 90000);
     await d.waitForTimeout(700);
     const card = await d.evaluate(() => {

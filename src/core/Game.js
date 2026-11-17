@@ -13,7 +13,14 @@ import { Storage } from './Storage.js';
 /* ------------------------------------------------------------------ */
 export const ROUND = {
   DURATION: 120,            // seconds, questions included; intro excluded
-  QUESTION_TIMES: [35, 80], // seconds into the round
+
+  // Question 1 is scheduled against the round clock. Question 2 is
+  // scheduled RELATIVE to the moment play resumes after question 1, not
+  // against the round clock, so the gap the player gets back on the road
+  // between the two is always the same however long they spent answering.
+  FIRST_QUESTION_AT: 25,            // seconds after gameplay starts
+  SECOND_QUESTION_AFTER_RESUME: 20, // seconds after play resumes from Q1
+
   ANSWER_LIMIT: 30,         // seconds per question, spent out of the 120
   CORRECT_POINTS: 100,
   HIT_PENALTY: 50,
@@ -280,6 +287,9 @@ export class Game {
     this.activeQuestion = null;
     this.questionClock = 0;
     this.questionOpenedAt = 0;
+    // round-clock time at which the next question is due; null = none left
+    this.nextQuestionAt = ROUND.FIRST_QUESTION_AT;
+    this.resumedFromQuestionAt = null;
     this.answerLocked = false;
     this.finishing = false;
     this.lastTickSecond = -1;
@@ -487,8 +497,13 @@ export class Game {
     this._camera(dt);
 
     // ---- questions ----
-    const nextAt = ROUND.QUESTION_TIMES[this.questionIndex];
-    if (nextAt !== undefined && this.roundTime >= nextAt) this._openQuestion();
+    // nextQuestionAt is null once both have been asked. It is set to 25 s at
+    // the start of the round, and re-armed to "resume + 20 s" by
+    // _resumeFromQuestion, so the two are never scheduled from the same
+    // reference and can never come due together.
+    if (this.nextQuestionAt !== null && this.roundTime >= this.nextQuestionAt) {
+      this._openQuestion();
+    }
 
     // ---- finish gate ----
     // New obstacle rows stop spawning once the gate exists, so it is always
@@ -618,9 +633,14 @@ export class Game {
   /* questions                                                        */
   /* ---------------------------------------------------------------- */
   _openQuestion() {
+    // Guard against a second overlay: only ever open from running play, and
+    // only while a question is still owed.
+    if (this.state !== 'running') return;
     const q = this.questions[this.questionIndex];
-    if (!q) return;
+    if (!q) { this.nextQuestionAt = null; return; }
 
+    // disarm immediately so this question cannot be scheduled twice
+    this.nextQuestionAt = null;
     this.activeQuestion = q;
 
     // The question countdown is ANCHORED to the round clock rather than
@@ -754,6 +774,14 @@ export class Game {
     this.nurse.play('run', { force: true });
     this.world.setFrozen(false);   // obstacles start arriving again
     this.state = 'running';
+
+    // Arm question 2 from THIS moment - the instant play resumes - rather
+    // than from the start of the round, so the player always gets the same
+    // stretch of running back before the next question.
+    this.resumedFromQuestionAt = this.roundTime;
+    this.nextQuestionAt = this.questionIndex < this.questions.length
+      ? this.roundTime + ROUND.SECOND_QUESTION_AFTER_RESUME
+      : null;
 
     if (ROUND.DURATION - this.roundTime <= 0) this._endRound();
   }

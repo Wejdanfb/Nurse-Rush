@@ -91,7 +91,7 @@ Open the URL on a phone and on a laptop and confirm:
 - the menu appears with the nurse and ambulances, and the footer reads
   **Developed by Wejdan Boharam**
 - **Play** runs the cinematic, then the game
-- a question appears about 35 seconds in
+- the first question appears 25 seconds in
 - sound works after the first tap
 
 ### Step 5 — make sure the link is actually public
@@ -170,7 +170,8 @@ nurse-rush/
 | Round length | exactly 120 seconds |
 | Intro | excluded from the timer, and skippable |
 | Questions per round | 2, drawn at random from the 20-question bank |
-| Question times | about 35 s and about 80 s into the round |
+| Question 1 | exactly 25 s after gameplay starts |
+| Question 2 | exactly 20 s after play resumes from question 1 |
 | Time to answer | 30 seconds each, taken out of the 120 |
 | Correct answer | +100 points, gameplay resumes |
 | Wrong answer or no answer | immediate GAME OVER |

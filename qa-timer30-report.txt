@@ -1,40 +1,40 @@
   PASS  CONFIG: answer limit is 30 seconds  — ANSWER_LIMIT=30
   PASS  CONFIG: round still exactly 120 seconds  — DURATION=120
-  PASS  CONFIG: question times unchanged  — [35,80]
+  PASS  CONFIG: Q1 at 25 s, Q2 20 s after resume  — FIRST_QUESTION_AT=25, SECOND_QUESTION_AFTER_RESUME=20
   PASS  CONFIG: How to Play text updated
   PASS  TEST A: answered correctly after 5 s — gameplay resumes immediately  — 1/2 correct, score 100, resumed without waiting out the remaining 25 s
-  PASS  TEST A: main timer decreased by ~5 s, not 30  — round clock advanced 5.71 s (HUD showed 1:19)
-  PASS  TEST A: countdown showed 25 after 5 s spent  — displayed "25", internal 24.75
+  PASS  TEST A: main timer decreased by ~5 s, not 30  — round clock advanced 5.71 s (HUD showed 1:29)
+  PASS  TEST A: countdown showed 25 after 5 s spent  — displayed "25", internal 24.83
   PASS  TEST B: still answerable at 29 s — question had not timed out  — clock showed "1", critical styling: true
   PASS  TEST B: answered correctly at 29 s — gameplay resumes  — 1/2 correct
-  PASS  TEST B: main timer decreased by ~29 s  — round clock advanced 29.71 s
+  PASS  TEST B: main timer decreased by ~29 s  — round clock advanced 29.62 s
   PASS  TEST C: no answer within 30 s triggers GAME OVER  — SHIFT FAILED!
   PASS  TEST C: shows a clear TIME'S UP message  — headline: "TIME'S UP!"
-  PASS  TEST C: shows the correct answer  — CORRECT ANSWER Patient’s full name and Medical Record Number (MRN)
+  PASS  TEST C: shows the correct answer  — CORRECT ANSWER True
   PASS  TEST C: shows the final score and a Try Again button  — score 0
-  PASS  TEST C: the 30 s came out of the round clock  — round clock advanced 30.8 s
+  PASS  TEST C: the 30 s came out of the round clock  — round clock advanced 30.7 s
   PASS  TEST D: wrong answer after 3 s triggers immediate GAME OVER  — SHIFT FAILED!
   PASS  TEST D: not labelled as a timeout  — headline "ROUND ENDED", reason "An incorrect answer ends the shift."
-  PASS  TEST E: both answers correct + full 120 s = VICTORY  — YOU SURVIVED THE SHIFT! at t=120.0 s, score 230, questions Q03+Q15
-  PASS  TEST F: main timer keeps running while a question is open  — 40 frames sampled, round clock advanced 1.625 s (HUD 1:24 → 1:23)
+  PASS  TEST E: both answers correct + full 120 s = VICTORY  — YOU SURVIVED THE SHIFT! at t=120.0 s, score 230, questions Q12+Q13
+  PASS  TEST F: main timer keeps running while a question is open  — 40 frames sampled, round clock advanced 1.625 s (HUD 1:34 → 1:33)
   PASS  TEST G: question countdown stays in lockstep with the main timer  — round +1.625 s vs question −1.625 s, drift 0.0000 s
   PASS  TEST G: exactly one question overlay, never duplicated  — cards before/during/after-double-open: 1/1/1, 4 answer buttons
-  PASS  TEST G: obstacle spawning is paused during a question  — world.frozen=true, obstacle count 10 → 10
+  PASS  TEST G: obstacle spawning is paused during a question  — world.frozen=true, obstacle count 8 → 8
   PASS  TEST G: main round timer stays visible alongside the question
   PASS  TEST G: spawning resumes and overlay clears after answering
-  PASS  TEST G: second question opens cleanly with its own fresh 30 s  — QUESTION 2 OF 2, clock 29.9 s, questions Q01 + Q14
+  PASS  TEST G: second question opens cleanly with its own fresh 30 s  — QUESTION 2 OF 2, clock 29.9 s, questions Q09 + Q07
   PASS  READABILITY iPhone portrait: 30 s countdown prominent and on screen  — "30" at 30px, bar 104px wide
   PASS  READABILITY iPhone portrait: round timer visible and clear of the card
-  PASS  READABILITY iPhone portrait: answer buttons remain 44px+  — 52 / 52
+  PASS  READABILITY iPhone portrait: answer buttons remain 44px+  — 52 / 62 / 52 / 52
   PASS  READABILITY iPhone landscape: 30 s countdown prominent and on screen  — "30" at 26px, bar 86px wide
   PASS  READABILITY iPhone landscape: round timer visible and clear of the card
-  PASS  READABILITY iPhone landscape: answer buttons remain 44px+  — 53 / 53 / 44 / 44
+  PASS  READABILITY iPhone landscape: answer buttons remain 44px+  — 44 / 44
   PASS  READABILITY iPad landscape: 30 s countdown prominent and on screen  — "30" at 44px, bar 104px wide
   PASS  READABILITY iPad landscape: round timer visible and clear of the card
-  PASS  READABILITY iPad landscape: answer buttons remain 44px+  — 69 / 69 / 69 / 69
+  PASS  READABILITY iPad landscape: answer buttons remain 44px+  — 52 / 52 / 69 / 69
   PASS  READABILITY Desktop: 30 s countdown prominent and on screen  — "30" at 44px, bar 104px wide
   PASS  READABILITY Desktop: round timer visible and clear of the card
-  PASS  READABILITY Desktop: answer buttons remain 44px+  — 69 / 69 / 52 / 52
+  PASS  READABILITY Desktop: answer buttons remain 44px+  — 91 / 91 / 52 / 52
 
 ======================================================
 37/37 checks passed

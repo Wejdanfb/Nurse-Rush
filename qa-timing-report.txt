@@ -1,0 +1,29 @@
+  PASS  CONFIG: Q1 scheduled at 25 s  — FIRST_QUESTION_AT=25
+  PASS  CONFIG: Q2 scheduled 20 s after resume  — SECOND_QUESTION_AFTER_RESUME=20
+  PASS  CONFIG: 30 s answer limit preserved  — ANSWER_LIMIT=30
+  PASS  CONFIG: 120 s round preserved  — DURATION=120
+  PASS  Q1: armed for 25 s from the moment gameplay starts  — nextQuestionAt=25 with round clock at 0.17 s
+  PASS  Q1: has not appeared before 25 s  — still running at t=23.84 s
+  PASS  Q1: appears at 25 s  — opened at t=25.008 s (HUD showed 1:34), QUESTION 1 OF 2
+  PASS  Q1: opens with a full 30 s answer limit  — 30.0 s
+  PASS  Q1: Q2 is NOT armed while Q1 is open  — nextQuestionAt=null
+  PASS  Q2: armed for exactly 20 s after play resumes  — resumed at t=32.59 s, Q2 due at t=52.59 s (gap 20.000 s)
+  PASS  Q2: not scheduled from the start of the round  — due at t=52.6 s — would have been 80 s under the old fixed schedule
+  PASS  Q2: does not appear immediately after Q1  — 20.0 s of running before it is due
+  PASS  Q2: has not appeared before its due time  — still running at t=51.43 s
+  PASS  Q2: appears 20 s after gameplay resumed  — measured gap 20.008 s (resumed 32.59 s → opened 52.60 s)
+  PASS  Q2: is the second, different question with its own 30 s  — QUESTION 2 OF 2, 30.0 s, Q17 + Q14
+  PASS  Q2: only one overlay on screen, nothing further armed
+  PASS  GAP: 2 s spent on Q1 → Q2 still 20 s after resume  — Q1 opened 25.0 s, resumed 27.6 s, Q2 due 47.6 s
+  PASS  GAP: 28 s spent on Q1 → Q2 still 20 s after resume  — Q1 opened 25.0 s, resumed 53.6 s, Q2 due 73.6 s
+  PASS  WORST CASE: even using all 30 s on Q1, Q2 still resolves inside the round  — Q2 due at 75.0 s, latest resolution 105.0 s of 120 s
+  PASS  NO OVERLAP: never more than one question card across the transition  — 90 frames sampled around the Q2 trigger, max cards = 1
+  PASS  VICTORY: both correct + full 120 s still wins  — 2/2 at t=120.0 s, score 200
+  PASS  GAME OVER: wrong answer still ends the shift immediately
+  PASS  GAME OVER: 30 s timeout still ends the shift with TIME'S UP  — TIME'S UP!
+
+======================================================
+23/23 checks passed
+No console or page errors.
+
+ALL QUESTION TIMING TESTS PASSED
