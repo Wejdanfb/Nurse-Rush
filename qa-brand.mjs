@@ -48,6 +48,10 @@ const shown = (list, mod) => list.filter((l) => l.cls.includes(mod) && l.visible
 async function newPage(browser, viewport = { width: 1100, height: 700 }, opts = {}) {
   const ctx = await browser.newContext({ viewport, ...opts });
   const p = await ctx.newPage();
+  // software rendering runs at a few fps, so the stock 30 s defaults are
+  // far too tight for anything that waits on game time
+  p.setDefaultTimeout(300000);
+  p.setDefaultNavigationTimeout(300000);
   p.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()); });
   p.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
   return { ctx, p };
@@ -297,18 +301,65 @@ async function run() {
     await W(p, () => !!window.NURSE_RUSH, 90000);
     const f = await p.evaluate(() => {
       const el = document.getElementById('dev-footer');
+      const credit = document.querySelector('.dev-footer__text');
+      const copy = document.querySelector('.dev-footer__copy');
+      const pick = (e) => {
+        const c = getComputedStyle(e);
+        const r = e.getBoundingClientRect();
+        return {
+          family: c.fontFamily, size: c.fontSize, weight: c.fontWeight,
+          spacing: c.letterSpacing, colour: c.color, transform: c.textTransform,
+          opacity: c.opacity, left: r.left, right: r.right,
+        };
+      };
+      const lines = [...document.querySelectorAll('.dev-footer__line')].map((l) => {
+        const r = l.getBoundingClientRect();
+        return { top: Math.round(r.top), bottom: Math.round(r.bottom),
+                 centre: Math.round((r.left + r.right) / 2),
+                 logos: l.querySelectorAll('.wb-logo').length };
+      });
       return {
         text: el.innerText.replace(/\s+/g, ' ').trim(),
-        copy: document.querySelector('.dev-footer__copy').textContent.trim(),
-        credit: document.querySelector('.dev-footer__text').innerText.trim(),
-        transform: getComputedStyle(document.querySelector('.dev-footer__copy')).textTransform,
+        copyText: copy.textContent.trim(),
+        creditText: credit.innerText.trim(),
+        credit: pick(credit), copy: pick(copy), lines,
+        footerLogos: el.querySelectorAll('.wb-logo').length,
+        bolds: el.querySelectorAll('b, strong').length,
+        viewportCentre: window.innerWidth / 2,
       };
     });
+
     check('FOOTER: exact copyright line present',
-      f.copy === '© Wejdan Boharam. All Rights Reserved.' && f.transform === 'none',
-      `"${f.copy}"`);
-    check('FOOTER: the standing developer credit is still there too',
-      f.credit === 'Developed by Wejdan Boharam', `"${f.credit}"`);
+      f.copyText === '© Wejdan Boharam. All Rights Reserved.' && f.copy.transform === 'none',
+      `"${f.copyText}"`);
+    check('FOOTER: exact developer credit present',
+      f.creditText === 'Developed by Wejdan Boharam' && f.credit.transform === 'none',
+      `"${f.creditText}"`);
+    check('FOOTER: exactly two lines', f.lines.length === 2, `${f.lines.length} line(s)`);
+
+    const sameType = f.credit.family === f.copy.family && f.credit.size === f.copy.size &&
+      f.credit.weight === f.copy.weight && f.credit.spacing === f.copy.spacing;
+    check('FOOTER: both lines share the same family, size, weight and letter spacing',
+      sameType,
+      `credit ${f.credit.size}/${f.credit.weight}/${f.credit.spacing} vs copyright ${f.copy.size}/${f.copy.weight}/${f.copy.spacing}`);
+    check('FOOTER: both lines have identical visual prominence',
+      f.credit.colour === f.copy.colour && f.credit.opacity === f.copy.opacity,
+      `${f.credit.colour} vs ${f.copy.colour}`);
+    check('FOOTER: the copyright line is not smaller or lighter than the credit',
+      parseFloat(f.copy.size) >= parseFloat(f.credit.size) &&
+      parseInt(f.copy.weight, 10) >= parseInt(f.credit.weight, 10));
+    check('FOOTER: no bold emphasis making part of a line heavier',
+      f.bolds === 0, `${f.bolds} bold element(s)`);
+    check('FOOTER: both lines centred horizontally',
+      Math.abs(f.lines[0].centre - f.viewportCentre) <= 2 &&
+      Math.abs(f.lines[1].centre - f.viewportCentre) <= 2,
+      `centres ${f.lines[0].centre} / ${f.lines[1].centre} vs viewport ${f.viewportCentre}`);
+    check('FOOTER: lines stacked with consistent spacing, no overlap',
+      f.lines[0].bottom <= f.lines[1].top + 1 && (f.lines[1].top - f.lines[0].bottom) <= 8,
+      `gap ${f.lines[1].top - f.lines[0].bottom}px`);
+    check('FOOTER: the WB mark sits on line 1 only',
+      f.lines[0].logos === 1 && f.lines[1].logos === 0 && f.footerLogos === 1,
+      `line 1: ${f.lines[0].logos}, line 2: ${f.lines[1].logos}`);
     check('FOOTER: the logo has not replaced the copyright text',
       /Wejdan Boharam\. All Rights Reserved\./.test(f.text));
     await ctx.close();
@@ -347,9 +398,23 @@ async function run() {
     check(`${name}: menu still fits — nothing overlaps the footer`,
       layout.buttons.b <= layout.footer.t + 1,
       `buttons end ${Math.round(layout.buttons.b)}px, footer starts ${Math.round(layout.footer.t)}px`);
-    check(`${name}: footer logo and copyright both fit on one line`,
-      foot && layout.copy && layout.copy.r <= layout.vw + 1 && layout.copy.l >= -1,
-      `footer row ${Math.round(layout.footer.l)}→${Math.round(layout.copy.r)} of ${layout.vw}px`);
+    const fit = await p.evaluate(() => {
+      const el = document.getElementById('dev-footer');
+      const ls = [...el.querySelectorAll('.dev-footer__line')].map((l) => {
+        const r = l.getBoundingClientRect();
+        return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom) };
+      });
+      const fr = el.getBoundingClientRect();
+      const c = getComputedStyle(document.querySelector('.dev-footer__copy'));
+      return { ls, footTop: Math.round(fr.top), size: c.fontSize, vw: innerWidth, vh: innerHeight,
+               clipped: [...el.querySelectorAll('.dev-footer__text, .dev-footer__copy')]
+                 .some((e) => e.scrollWidth > e.clientWidth + 1) };
+    });
+    const inside = fit.ls.every((r) => r.l >= -1 && r.r <= fit.vw + 1 &&
+      r.t >= fit.footTop - 1 && r.b <= fit.vh + 1);
+    check(`${name}: both footer lines fit without clipping or overlap`,
+      foot && fit.ls.length === 2 && inside && !fit.clipped,
+      `line widths ${fit.ls.map((r) => r.r - r.l).join(' / ')}px in ${fit.vw}px at ${fit.size}`);
 
     await p.screenshot({ path: `/home/claude/qa/b-${name.replace(/\s+/g, '-').toLowerCase()}.png` });
     await ctx.close();

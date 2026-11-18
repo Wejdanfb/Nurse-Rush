@@ -11,8 +11,8 @@
   PASS  MENU: positioned above the NURSE RUSH title  — visible artwork ends at 102px, title starts at 119px
   PASS  MENU: visible but does not dominate the game title  — logo 110px tall vs title block 192px
   PASS  RECORDS STRIP: smaller WB logo in the best-score header  — 26x26px
-  PASS  GAMEPLAY: no large logo over the play area  — 1 logo(s) on screen, largest 16px
-  PASS  GAMEPLAY: only the discreet footer watermark is shown  — 16x16px in the footer bar
+  PASS  GAMEPLAY: no large logo over the play area  — 1 logo(s) on screen, largest 18px
+  PASS  GAMEPLAY: only the discreet footer watermark is shown  — 18x18px in the footer bar
   PASS  GAMEPLAY: watermark obstructs no HUD element  — sits inside the footer bar, clear of timer, score, questions counter and speed gauge
   PASS  QUESTION: no logo overlaps the question card  — 1 logo on screen (footer watermark), card clear
   PASS  VICTORY: WB logo displayed  — 44x44px
@@ -24,23 +24,31 @@
   PASS  GAME OVER: does not interfere with the score or the buttons  — clear of the score grid and the action buttons
   PASS  GAME OVER: undistorted and unfiltered  — 44x44, filter none
   PASS  FOOTER: exact copyright line present  — "© Wejdan Boharam. All Rights Reserved."
-  PASS  FOOTER: the standing developer credit is still there too  — "Developed by Wejdan Boharam"
+  PASS  FOOTER: exact developer credit present  — "Developed by Wejdan Boharam"
+  PASS  FOOTER: exactly two lines  — 2 line(s)
+  PASS  FOOTER: both lines share the same family, size, weight and letter spacing  — credit 13px/600/1.3px vs copyright 13px/600/1.3px
+  PASS  FOOTER: both lines have identical visual prominence  — rgba(246, 251, 252, 0.76) vs rgba(246, 251, 252, 0.76)
+  PASS  FOOTER: the copyright line is not smaller or lighter than the credit
+  PASS  FOOTER: no bold emphasis making part of a line heavier  — 0 bold element(s)
+  PASS  FOOTER: both lines centred horizontally  — centres 550 / 550 vs viewport 550
+  PASS  FOOTER: lines stacked with consistent spacing, no overlap  — gap 3px
+  PASS  FOOTER: the WB mark sits on line 1 only  — line 1: 1, line 2: 0
   PASS  FOOTER: the logo has not replaced the copyright text
   PASS  iPhone portrait: menu logo loads, fits and keeps its shape  — 74x74px on a 390x844 viewport
-  PASS  iPhone portrait: menu still fits — nothing overlaps the footer  — buttons end 775px, footer starts 800px
-  PASS  iPhone portrait: footer logo and copyright both fit on one line  — footer row 0→380 of 390px
+  PASS  iPhone portrait: menu still fits — nothing overlaps the footer  — buttons end 777px, footer starts 802px
+  PASS  iPhone portrait: both footer lines fit without clipping or overlap  — line widths 258 / 300px in 390px at 12px
   PASS  iPhone landscape: menu logo loads, fits and keeps its shape  — 46.8x46.8px on a 844x390 viewport
-  PASS  iPhone landscape: menu still fits — nothing overlaps the footer  — buttons end 352px, footer starts 366px
-  PASS  iPhone landscape: footer logo and copyright both fit on one line  — footer row 0→628 of 844px
+  PASS  iPhone landscape: menu still fits — nothing overlaps the footer  — buttons end 344px, footer starts 358px
+  PASS  iPhone landscape: both footer lines fit without clipping or overlap  — line widths 216 / 242px in 844px at 10px
   PASS  iPad: menu logo loads, fits and keeps its shape  — 110x110px on a 820x1180 viewport
-  PASS  iPad: menu still fits — nothing overlaps the footer  — buttons end 1111px, footer starts 1146px
-  PASS  iPad: footer logo and copyright both fit on one line  — footer row 0→675 of 820px
+  PASS  iPad: menu still fits — nothing overlaps the footer  — buttons end 1099px, footer starts 1134px
+  PASS  iPad: both footer lines fit without clipping or overlap  — line widths 276 / 324px in 820px at 13px
   PASS  Desktop: menu logo loads, fits and keeps its shape  — 110x110px on a 1440x900 viewport
-  PASS  Desktop: menu still fits — nothing overlaps the footer  — buttons end 839px, footer starts 866px
-  PASS  Desktop: footer logo and copyright both fit on one line  — footer row 0→985 of 1440px
+  PASS  Desktop: menu still fits — nothing overlaps the footer  — buttons end 827px, footer starts 854px
+  PASS  Desktop: both footer lines fit without clipping or overlap  — line widths 276 / 324px in 1440px at 13px
 
 ======================================================
-40/40 checks passed
+48/48 checks passed
 No console or page errors.
 
 ALL BRAND LOGO CHECKS PASSED

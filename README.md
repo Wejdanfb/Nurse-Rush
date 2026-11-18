@@ -372,12 +372,14 @@ best-score strip, on the victory and game-over panels, and as a small
 watermark in the footer bar during play. It is never drawn over the play
 field.
 
-The footer carries both required lines on every screen:
+The footer is exactly two centred lines on every screen, with identical
+typography on both — same family, size, weight, letter spacing and colour,
+so neither reads as secondary:
 
-> Developed by **Wejdan Boharam**  ·  © Wejdan Boharam. All Rights Reserved.
+> [WB mark] Developed by Wejdan Boharam
+> © Wejdan Boharam. All Rights Reserved.
 
-On narrow phones the footer wraps to two centred lines; both texts are kept
-in full.
+The WB mark sits on the first line only.
 
 ## Automated acceptance test
 
