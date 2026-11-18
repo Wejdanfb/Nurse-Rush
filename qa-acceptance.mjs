@@ -779,12 +779,14 @@ async function run() {
         fontSize: cs.fontSize,
       };
     });
-    const renderedExact = footer.transform === 'none'
-      ? footer.dom === 'Developed by Wejdan Boharam'
-      : false;
-    check('7 FOOTER', `${name}: renders exactly "Developed by Wejdan Boharam"`,
+    // The footer carries the standing developer credit AND the copyright
+    // line, both in their exact written form and neither uppercased.
+    const renderedExact = footer.transform === 'none' &&
+      footer.dom.includes('Developed by Wejdan Boharam') &&
+      footer.dom.includes('\u00a9 Wejdan Boharam. All Rights Reserved.');
+    check('7 FOOTER', `${name}: renders the exact credit and copyright lines`,
       renderedExact && footer.visible,
-      `rendered as "${footer.transform === 'uppercase' ? footer.dom.toUpperCase() : footer.dom}" (text-transform: ${footer.transform})`);
+      `rendered as "${footer.dom}" (text-transform: ${footer.transform})`);
 
     // tap targets on menu
     const taps = await d.evaluate(() => {

@@ -295,11 +295,13 @@ export class UI {
   }
 
   setMenuBest(best, wins, rounds) {
-    if (!best) {
-      this.el.menuBest.textContent = rounds ? 'No score yet — survive the shift!' : '';
-      return;
-    }
-    this.el.menuBest.textContent = `Best score ${best}  ·  shifts survived ${wins}/${rounds}`;
+    const text = best
+      ? `Best score ${best}  ·  shifts survived ${wins}/${rounds}`
+      : (rounds ? 'No score yet — survive the shift!' : '');
+    this.el.menuBest.textContent = text;
+    // hide the whole strip (brand mark included) when there is no record yet
+    const strip = document.querySelector('.menu-records');
+    if (strip) strip.classList.toggle('is-empty', !text);
   }
 
   setSoundLabel(on) {

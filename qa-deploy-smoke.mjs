@@ -27,7 +27,9 @@ for (const path of ['', 'play/', 'a/b/c/', 'index.html']) {
   })) : null;
 
   const failures = net.filter(r => r.status >= 400);
-  const okFooter = footer && footer.visible && footer.tt==='none' && footer.text==='Developed by Wejdan Boharam';
+  const okFooter = footer && footer.visible && footer.tt==='none' &&
+    footer.text.includes('Developed by Wejdan Boharam') &&
+    footer.text.includes('\u00a9 Wejdan Boharam. All Rights Reserved.');
   const ok = booted && failures.length===0 && errs.length===0 && okFooter;
   if (!ok) bad++;
   console.log(`${ok?'  PASS':'✗ FAIL'}  boot from "/${path}"  — booted=${booted}, requests=${net.length}, 4xx/5xx=${failures.length}, errors=${errs.length}, footer="${footer?footer.text:'n/a'}"`);

@@ -1,4 +1,8 @@
 import './style.css';
+// The official WB brand artwork, bundled by Vite: one import yields one
+// hashed, immutably-cached URL that every placement shares, so the browser
+// fetches the file once however many times it appears on screen.
+import wbBrandLogo from './assets/wb-brand-logo.png';
 import { Game } from './core/Game.js';
 import { UI } from './ui/UI.js';
 import { AudioEngine } from './core/Audio.js';
@@ -12,6 +16,19 @@ import { ROUND } from './core/Game.js';
 /* ------------------------------------------------------------------ */
 
 const canvas = document.getElementById('game-canvas');
+
+/**
+ * Point every brand-logo slot at the one bundled asset. Done before the
+ * first screen is shown so the logo is already in place on the menu, and
+ * before any <img> can render a broken-image glyph.
+ */
+function applyBrandLogo() {
+  const slots = document.querySelectorAll('[data-wb-logo]');
+  slots.forEach((img) => { img.src = wbBrandLogo; });
+  return slots.length;
+}
+applyBrandLogo();
+
 const ui = new UI();
 
 // fail loudly if the question bank was edited into an invalid state
@@ -47,6 +64,7 @@ function boot() {
       window.NURSE_RUSH = {
         game, ui, audio, input, Storage, ROUND,
         questionApi: { QUESTIONS, validateBank, pickRoundQuestions, prepare },
+        brandLogoUrl: wbBrandLogo,
       };
 
       const s = Storage.all();

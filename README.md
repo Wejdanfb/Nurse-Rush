@@ -305,6 +305,13 @@ by the code at runtime:
 | Music and every sound effect | synthesised with the Web Audio API (`src/core/Audio.js`) | original work |
 | Fonts | system fonts (Trebuchet MS / Segoe UI / Helvetica Neue / Arial) | no download, no licence needed |
 
+The one exception is the **WB brand logo** at `src/assets/wb-brand-logo.png`,
+supplied by Wejdan Boharam and used as the official brand mark. It is the
+only bitmap in the project. It is bundled by Vite from a single `import`, so
+all five placements share one hashed, immutably-cached URL and the browser
+fetches it once. The artwork is used exactly as supplied — contained, never
+stretched, cropped, recoloured or filtered.
+
 The only third-party dependency is **Three.js** (`three@^0.169.0`), under the
 MIT licence, and **Vite** as a build tool (MIT). No Subway Surfers characters,
 branding, assets or code were used — the visual identity is original and
@@ -357,6 +364,20 @@ A few practical notes:
 Developed by **Wejdan Boharam**.
 
 ---
+
+## Brand
+
+The WB logo appears on the main menu (above the NURSE RUSH title), in the
+best-score strip, on the victory and game-over panels, and as a small
+watermark in the footer bar during play. It is never drawn over the play
+field.
+
+The footer carries both required lines on every screen:
+
+> Developed by **Wejdan Boharam**  ·  © Wejdan Boharam. All Rights Reserved.
+
+On narrow phones the footer wraps to two centred lines; both texts are kept
+in full.
 
 ## Automated acceptance test
 

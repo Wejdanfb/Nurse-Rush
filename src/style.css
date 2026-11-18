@@ -106,6 +106,63 @@ html, body {
 }
 .menu-top { width: 100%; }
 
+/* ===========================================================
+   WB BRAND LOGO
+   The supplied artwork is used as-is: contained, never stretched,
+   cropped or recoloured, and with NO CSS filter applied to it.
+   Prominence is controlled by size alone.
+   =========================================================== */
+.wb-logo {
+  display: block;
+  object-fit: contain;        /* never distort the supplied artwork */
+  object-position: center;
+  aspect-ratio: 1 / 1;        /* the asset is square; keeps layout stable pre-load */
+  width: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+/* the img has no src until the bundled asset URL is applied, so it must
+   occupy no space and show no broken-image glyph before that happens */
+.wb-logo:not([src]) { visibility: hidden; }
+
+/* main menu - above the game title, clearly present but smaller than it */
+.wb-logo--menu {
+  /* The artwork carries ~21% transparent margin of its own, so the visible
+     tile is smaller than the box. Sized so it reads clearly while leaving
+     the 3D menu scene behind the title as uncluttered as it was before. */
+  height: clamp(74px, 18vw, 110px);
+  margin: -6px auto -6px;
+}
+/* best-score strip */
+.menu-records {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+/* no record yet: don't leave a stray mark floating on its own */
+.menu-records.is-empty { display: none; }
+.wb-logo--strip { height: 26px; flex: 0 0 auto; }
+
+/* victory / game over - subtle, above the result heading */
+.wb-logo--panel {
+  height: 44px;
+  margin: 0 auto 10px;
+}
+
+/* footer watermark - discreet, in a safe area, never over the play field */
+.wb-logo--footer { height: 19px; flex: 0 0 auto; }
+
+@media (max-height: 430px) {
+  .wb-logo--menu { height: clamp(46px, 12vh, 66px); margin: -4px auto -2px; }
+  .wb-logo--strip { height: 20px; }
+  .wb-logo--panel { height: 32px; margin-bottom: 6px; }
+  .wb-logo--footer { height: 15px; }
+  .menu-records { margin-top: 5px; gap: 6px; }
+}
+
 /* ---------- logo ---------- */
 .logo {
   text-align: center;
@@ -829,6 +886,7 @@ body.is-boosting #hud::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(3, 15, 22, 0) 0%, rgba(3, 15, 22, .55) 55%, rgba(3, 15, 22, .8) 100%);
 }
@@ -848,10 +906,27 @@ body.is-boosting #hud::after {
   color: rgba(184, 245, 236, .94);
   letter-spacing: .09em;
 }
+/* the copyright line sits alongside the credit - neither replaces the other */
+.dev-footer__sep { color: rgba(246, 251, 252, .35); font-size: 11px; }
+.dev-footer__copy {
+  font-family: var(--ui-font);
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: rgba(246, 251, 252, .58);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .85);
+  white-space: nowrap;
+}
+@media (min-width: 760px) {
+  .dev-footer__copy { font-size: 12px; }
+}
 /* quieter over live gameplay so it never competes with the action */
 body.is-playing .dev-footer { background: none; }
 body.is-playing .dev-footer__text { color: rgba(246, 251, 252, .46); font-size: 11px; }
 body.is-playing .dev-footer__text b { color: rgba(184, 245, 236, .66); }
+body.is-playing .dev-footer__copy { color: rgba(246, 251, 252, .4); font-size: 10px; }
+body.is-playing .dev-footer__sep { color: rgba(246, 251, 252, .22); }
+/* the watermark steps back over live play but never leaves the screen */
+body.is-playing .wb-logo--footer { height: 16px; opacity: .72; }
 
 @media (min-width: 760px) {
   :root { --footer-h: 34px; }
@@ -859,10 +934,31 @@ body.is-playing .dev-footer__text b { color: rgba(184, 245, 236, .66); }
 }
 /* Very short landscape phones. The logo is sized off viewport HEIGHT here,
    otherwise a wide-but-short screen scales it off the bottom of the menu. */
+/* Narrow phones: the credit and the copyright line together are wider than
+   the screen, so the footer wraps to two centred lines and grows to suit.
+   Both texts are kept in full - neither is abbreviated or dropped. */
+@media (max-width: 560px) and (min-height: 431px) {
+  :root { --footer-h: 44px; }
+  .dev-footer {
+    flex-wrap: wrap;
+    row-gap: 0;
+    column-gap: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .dev-footer__sep { display: none; }
+  .dev-footer__text { font-size: 11px; }
+  .dev-footer__copy { flex-basis: 100%; text-align: center; font-size: 10px; }
+  .wb-logo--footer { height: 17px; }
+  body.is-playing .dev-footer__copy { font-size: 9.5px; }
+}
+
 @media (max-height: 430px) {
   :root { --footer-h: 24px; }
   .dev-footer__text { font-size: 10.5px; letter-spacing: .06em; }
+  .dev-footer__copy { font-size: 9.5px; letter-spacing: .03em; }
   body.is-playing .dev-footer__text { font-size: 10px; }
+  body.is-playing .dev-footer__copy { font-size: 9px; }
   .logo { margin-bottom: 6px; }
   .logo__nurse { font-size: clamp(20px, 7.5vh, 38px); }
   .logo__rush { font-size: clamp(24px, 9.5vh, 48px); }

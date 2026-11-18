@@ -28,11 +28,18 @@
 <div id="menu" class="screen screen--center">
   <div class="menu-inner">
     <div class="menu-top">
+      <img class="wb-logo wb-logo--menu" data-wb-logo alt="WB — Wejdan Boharam" decoding="async" />
+
       <div class="logo">
         <span class="logo__nurse">NURSE</span><span class="logo__rush">RUSH</span>
         <div class="logo__tag">Survive the shift</div>
       </div>
-      <div class="menu-best" id="menu-best"></div>
+
+      <!-- best-score strip: the game's standing-record header -->
+      <div class="menu-records">
+        <img class="wb-logo wb-logo--strip" data-wb-logo alt="" aria-hidden="true" decoding="async" />
+        <div class="menu-best" id="menu-best"></div>
+      </div>
     </div>
 
     <div class="menu-buttons">
@@ -149,6 +156,7 @@
 <!-- ============ VICTORY ============ -->
 <div id="victory" class="screen screen--center">
   <div class="panel panel--win">
+    <img class="wb-logo wb-logo--panel" data-wb-logo alt="WB — Wejdan Boharam" decoding="async" />
     <div class="result-kicker">SHIFT COMPLETE</div>
     <h2 class="result-title result-title--win">YOU SURVIVED THE SHIFT!</h2>
     <div class="result-grid">
@@ -167,6 +175,7 @@
 <!-- ============ GAME OVER ============ -->
 <div id="gameover" class="screen screen--center">
   <div class="panel panel--lose">
+    <img class="wb-logo wb-logo--panel" data-wb-logo alt="WB — Wejdan Boharam" decoding="async" />
     <div class="result-kicker">ROUND ENDED</div>
     <h2 class="result-title result-title--lose">SHIFT FAILED!</h2>
     <div class="result-reason" id="lose-reason"></div>
@@ -207,7 +216,10 @@
   This footer must remain in the deployed site through all future design updates.
 -->
 <footer id="dev-footer" class="dev-footer">
+  <img class="wb-logo wb-logo--footer" data-wb-logo alt="" aria-hidden="true" decoding="async" />
   <span class="dev-footer__text">Developed by <b>Wejdan Boharam</b></span>
+  <span class="dev-footer__sep" aria-hidden="true">&middot;</span>
+  <span class="dev-footer__copy">&copy; Wejdan Boharam. All Rights Reserved.</span>
 </footer>
 
 <script type="module" src="/src/main.js"></script>

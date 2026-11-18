@@ -1,0 +1,46 @@
+  PASS  ASSET: the brand logo is fetched from the project as a real file  — 200 image/png /assets/wb-brand-logo-CDABAsUt.png
+  PASS  ASSET: descriptive filename kept (wb-brand-logo)  — /assets/wb-brand-logo-CDABAsUt.png
+  PASS  ASSET: fetched exactly once for all placements  — 1 network request(s)
+  PASS  ASSET: served immutably cached  — public, max-age=31536000, immutable
+  PASS  ASSET: square aspect ratio preserved (no crop, no stretch)  — 512x512
+  PASS  ASSET: original cyan lettering preserved exactly  — rgb(0,209,231) — matches the supplied artwork
+  PASS  ASSET: transparent margin preserved (nothing cropped)  — corner alpha 0
+  PASS  MENU: WB logo is displayed  — 110x110px
+  PASS  MENU: logo rendered undistorted (object-fit: contain, square box)  — object-fit: contain, box 110x110
+  PASS  MENU: no CSS filter altering the artwork  — filter: none
+  PASS  MENU: positioned above the NURSE RUSH title  — visible artwork ends at 102px, title starts at 119px
+  PASS  MENU: visible but does not dominate the game title  — logo 110px tall vs title block 192px
+  PASS  RECORDS STRIP: smaller WB logo in the best-score header  — 26x26px
+  PASS  GAMEPLAY: no large logo over the play area  — 1 logo(s) on screen, largest 16px
+  PASS  GAMEPLAY: only the discreet footer watermark is shown  — 16x16px in the footer bar
+  PASS  GAMEPLAY: watermark obstructs no HUD element  — sits inside the footer bar, clear of timer, score, questions counter and speed gauge
+  PASS  QUESTION: no logo overlaps the question card  — 1 logo on screen (footer watermark), card clear
+  PASS  VICTORY: WB logo displayed  — 44x44px
+  PASS  VICTORY: subtle — smaller than the result heading  — logo 44px vs heading 92px
+  PASS  VICTORY: does not interfere with the score or the buttons  — clear of the score grid and the action buttons
+  PASS  VICTORY: undistorted and unfiltered  — 44x44, filter none
+  PASS  GAME OVER: WB logo displayed  — 44x44px
+  PASS  GAME OVER: subtle — smaller than the result heading  — logo 44px vs heading 46px
+  PASS  GAME OVER: does not interfere with the score or the buttons  — clear of the score grid and the action buttons
+  PASS  GAME OVER: undistorted and unfiltered  — 44x44, filter none
+  PASS  FOOTER: exact copyright line present  — "© Wejdan Boharam. All Rights Reserved."
+  PASS  FOOTER: the standing developer credit is still there too  — "Developed by Wejdan Boharam"
+  PASS  FOOTER: the logo has not replaced the copyright text
+  PASS  iPhone portrait: menu logo loads, fits and keeps its shape  — 74x74px on a 390x844 viewport
+  PASS  iPhone portrait: menu still fits — nothing overlaps the footer  — buttons end 775px, footer starts 800px
+  PASS  iPhone portrait: footer logo and copyright both fit on one line  — footer row 0→380 of 390px
+  PASS  iPhone landscape: menu logo loads, fits and keeps its shape  — 46.8x46.8px on a 844x390 viewport
+  PASS  iPhone landscape: menu still fits — nothing overlaps the footer  — buttons end 352px, footer starts 366px
+  PASS  iPhone landscape: footer logo and copyright both fit on one line  — footer row 0→628 of 844px
+  PASS  iPad: menu logo loads, fits and keeps its shape  — 110x110px on a 820x1180 viewport
+  PASS  iPad: menu still fits — nothing overlaps the footer  — buttons end 1111px, footer starts 1146px
+  PASS  iPad: footer logo and copyright both fit on one line  — footer row 0→675 of 820px
+  PASS  Desktop: menu logo loads, fits and keeps its shape  — 110x110px on a 1440x900 viewport
+  PASS  Desktop: menu still fits — nothing overlaps the footer  — buttons end 839px, footer starts 866px
+  PASS  Desktop: footer logo and copyright both fit on one line  — footer row 0→985 of 1440px
+
+======================================================
+40/40 checks passed
+No console or page errors.
+
+ALL BRAND LOGO CHECKS PASSED
