@@ -368,18 +368,12 @@ Developed by **Wejdan Boharam**.
 ## Brand
 
 The WB logo appears on the main menu (above the NURSE RUSH title), in the
-best-score strip, on the victory and game-over panels, and as a small
-watermark in the footer bar during play. It is never drawn over the play
-field.
+best-score strip, and on the victory and game-over panels. It is never
+drawn over the play field.
 
-The footer is exactly two centred lines on every screen, with identical
-typography on both — same family, size, weight, letter spacing and colour,
-so neither reads as secondary:
+The footer is a single centred line on every screen:
 
-> [WB mark] Developed by Wejdan Boharam
 > © Wejdan Boharam. All Rights Reserved.
-
-The WB mark sits on the first line only.
 
 ## Automated acceptance test
 

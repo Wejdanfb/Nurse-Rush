@@ -770,7 +770,7 @@ async function run() {
     // footer exact text
     const footer = await d.evaluate(() => {
       const f = document.getElementById('dev-footer');
-      const cs = getComputedStyle(f.querySelector('.dev-footer__text'));
+      const cs = getComputedStyle(f.querySelector('.dev-footer__copy'));
       const r = f.getBoundingClientRect();
       return {
         dom: f.innerText.replace(/\s+/g, ' ').trim(),
@@ -779,12 +779,11 @@ async function run() {
         fontSize: cs.fontSize,
       };
     });
-    // The footer carries the standing developer credit AND the copyright
-    // line, both in their exact written form and neither uppercased.
+    // The footer is the copyright line alone, in its exact written form
+    // and not uppercased.
     const renderedExact = footer.transform === 'none' &&
-      footer.dom.includes('Developed by Wejdan Boharam') &&
-      footer.dom.includes('\u00a9 Wejdan Boharam. All Rights Reserved.');
-    check('7 FOOTER', `${name}: renders the exact credit and copyright lines`,
+      footer.dom === '\u00a9 Wejdan Boharam. All Rights Reserved.';
+    check('7 FOOTER', `${name}: renders exactly the copyright line`,
       renderedExact && footer.visible,
       `rendered as "${footer.dom}" (text-transform: ${footer.transform})`);
 

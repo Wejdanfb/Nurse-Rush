@@ -22,7 +22,7 @@
   --ui-font: 'Trebuchet MS', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
 
-  --footer-h: 42px;
+  --footer-h: 30px;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -152,14 +152,11 @@ html, body {
   margin: 0 auto 10px;
 }
 
-/* footer watermark - discreet, in a safe area, never over the play field */
-.wb-logo--footer { height: 17px; flex: 0 0 auto; }
 
 @media (max-height: 430px) {
   .wb-logo--menu { height: clamp(46px, 12vh, 66px); margin: -4px auto -2px; }
   .wb-logo--strip { height: 20px; }
   .wb-logo--panel { height: 32px; margin-bottom: 6px; }
-  .wb-logo--footer { height: 13px; }
   .menu-records { margin-top: 5px; gap: 6px; }
 }
 
@@ -884,25 +881,21 @@ body.is-boosting #hud::after {
   height: calc(var(--footer-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
   display: flex;
-  flex-direction: column;      /* exactly two stacked lines */
   align-items: center;
   justify-content: center;
-  row-gap: 3px;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(3, 15, 22, 0) 0%, rgba(3, 15, 22, .55) 55%, rgba(3, 15, 22, .8) 100%);
 }
 .dev-footer__line {
   display: flex;
-  align-items: center;         /* vertically centres the mark on its line */
+  align-items: center;
   justify-content: center;
-  gap: 8px;
   max-width: 100%;
   padding: 0 10px;
 }
-/* ONE type ramp for both lines: same family, size, weight, letter spacing,
-   colour and shadow, so neither line reads as secondary to the other.
-   Both render in their exact written form - no text-transform. */
-.dev-footer__text,
+/* The copyright line keeps exactly the type it had as part of the former
+   two-line footer - same family, size, weight, letter spacing, colour and
+   shadow. Removing the line above it must not shrink it. */
 .dev-footer__copy {
   font-family: var(--ui-font);
   font-size: 12px;
@@ -916,30 +909,22 @@ body.is-boosting #hud::after {
 /* quieter over live gameplay so it never competes with the action -
    but both lines step back by exactly the same amount */
 body.is-playing .dev-footer { background: none; }
-body.is-playing .dev-footer__text,
 body.is-playing .dev-footer__copy { color: rgba(246, 251, 252, .52); }
-body.is-playing .wb-logo--footer { opacity: .74; }
 
 @media (min-width: 760px) {
-  :root { --footer-h: 46px; }
-  .dev-footer__text,
+  :root { --footer-h: 34px; }
   .dev-footer__copy { font-size: 13px; }
-  .wb-logo--footer { height: 18px; }
 }
 /* Very short landscape phones. The logo is sized off viewport HEIGHT here,
    otherwise a wide-but-short screen scales it off the bottom of the menu. */
 /* Very narrow phones: ease the type down a step so the longer copyright
    line still fits on one unbroken line. Both lines stay identical. */
 @media (max-width: 374px) {
-  .dev-footer__text,
   .dev-footer__copy { font-size: 11px; letter-spacing: .07em; }
-  .wb-logo--footer { height: 13px; }
 }
 
 @media (max-height: 430px) {
-  :root { --footer-h: 32px; }
-  .dev-footer { row-gap: 1px; }
-  .dev-footer__text,
+  :root { --footer-h: 24px; }
   .dev-footer__copy { font-size: 10px; letter-spacing: .07em; }
   .logo { margin-bottom: 6px; }
   .logo__nurse { font-size: clamp(20px, 7.5vh, 38px); }
